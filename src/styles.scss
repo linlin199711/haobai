@@ -1,0 +1,148 @@
+// 主题色
+$primary-color: #1890ff;
+$success-color: #52c41a;
+$warning-color: #faad14;
+$error-color: #f5222d;
+$info-color: #1890ff;
+
+// 按钮样式
+.el-button--primary {
+  background-color: $primary-color;
+  border-color: $primary-color;
+}
+
+.el-button--success {
+  background-color: $success-color;
+  border-color: $success-color;
+}
+
+.el-button--warning {
+  background-color: $warning-color;
+  border-color: $warning-color;
+}
+
+.el-button--danger {
+  background-color: $error-color;
+  border-color: $error-color;
+}
+
+// 话务条容器
+.call-bar {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+    margin: 10px;
+  }
+}
+
+// 状态按钮容器
+.status-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
+}
+
+// 核心操作按钮容器
+.core-operations {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
+}
+
+// 通话信息展示区
+.call-info {
+  background-color: #f5f7fa;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.call-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.call-info-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  margin-bottom: 5px;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+  }
+
+  label {
+    font-weight: 500;
+    margin-right: 8px;
+    color: #666;
+  }
+
+  span {
+    color: #333;
+  }
+}
+
+// 动画效果
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// 来电弹窗
+.call-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  z-index: 1000;
+  min-width: 400px;
+
+  @media (max-width: 768px) {
+    min-width: 300px;
+    padding: 20px;
+  }
+}
+
+// 遮罩层
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}

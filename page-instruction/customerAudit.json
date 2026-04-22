@@ -1,0 +1,6 @@
+{
+  "pageId": "customerAudit",
+  "pageTitle": "客户业务审核",
+  "updateTime": "2026-04-22T00:00:00.000Z",
+  "content": "<h3>【客户业务审核 - 页面说明】</h3><p><strong>一、功能概述</strong></p><p>客户业务审核模块用于处理客户提交的各类业务申请。</p><p><strong>二、主要功能</strong></p><ul><li>待审核业务列表</li><li>业务详情查看</li><li>审核通过/驳回操作</li><li>审核历史查询</li></ul><p><strong>三、业务类型</strong></p><ul><li>查询转接业务</li><li>短信名片业务</li><li>实名查询业务</li><li>其他增值业务</li></ul>"
+}

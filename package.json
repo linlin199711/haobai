@@ -1,0 +1,28 @@
+{
+  "name": "hxhjb",
+  "version": "1.0.0",
+  "description": "呼叫中心坐席系统话务条",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/compiler-sfc": "^3.4.0",
+    "sass": "^1.99.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vue": "^3.5.32"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "element-plus": "^2.13.7",
+    "pinia": "^3.0.4"
+  }
+}

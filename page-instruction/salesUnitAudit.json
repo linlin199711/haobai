@@ -1,0 +1,6 @@
+{
+  "pageId": "salesUnitAudit",
+  "pageTitle": "销售单元信息审核",
+  "updateTime": "2026-04-22T00:00:00.000Z",
+  "content": "<h3>【销售单元信息审核 - 页面说明】</h3><p><strong>一、功能概述</strong></p><p>销售单元信息审核模块用于审核销售单元的新增和变更申请。</p><p><strong>二、主要功能</strong></p><ul><li>待审核销售单元列表</li><li>销售单元详情查看</li><li>审核操作</li><li>批量审核</li></ul>"
+}

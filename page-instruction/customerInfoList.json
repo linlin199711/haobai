@@ -1,0 +1,6 @@
+{
+  "pageId": "customerInfoList",
+  "pageTitle": "客户基础信息",
+  "updateTime": "2026-04-22T00:00:00.000Z",
+  "content": "<h3>【客户基础信息 - 页面说明】</h3><p><strong>一、功能概述</strong></p><p>客户基础信息管理模块用于维护客户的基本信息档案。</p><p><strong>二、主要功能</strong></p><ul><li>客户信息查询：支持多条件组合查询</li><li>客户信息维护：新增、编辑、删除客户</li><li>客户业务查看：查看关联业务信息</li><li>批量导入导出</li></ul><p><strong>三、字段说明</strong></p><ul><li>平台客户编号：系统自动生成的唯一标识</li><li>客户ID：内部系统客户标识</li><li>保密性质：是否保密客户</li></ul>"
+}

@@ -1,0 +1,6 @@
+{
+  "pageId": "nonNumberQuery",
+  "pageTitle": "非号码查询",
+  "updateTime": "2026-04-22T00:00:00.000Z",
+  "content": "<h3>【非号码查询 - 页面说明】</h3><p><strong>一、功能概述</strong></p><p>非号码查询模块提供天气、公交、快递等公共信息查询服务。</p><p><strong>二、主要功能</strong></p><ul><li>天气查询：支持全国城市天气预报</li><li>公交查询：公交线路、站点信息</li><li>快递查询：支持主流快递公司</li><li>其他公共服务信息</li></ul>"
+}
