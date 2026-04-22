@@ -8,7 +8,7 @@ import type { PageInstruction, ServiceResponse } from '../types/pageInstruction'
 import { getDefaultPageInstruction } from './defaultContent'
 
 // GitHub 配置
-// Token 从环境变量读取，需要在 .env 文件中配置 VITE_GITHUB_TOKEN
+// Token 从环境变量读取，构建时通过 GitHub Actions Secrets 注入
 const GITHUB_CONFIG = {
   token: import.meta.env.VITE_GITHUB_TOKEN || '',
   owner: 'linlin199711',
