@@ -68,69 +68,111 @@
           <div v-if="showOperationMenu && !sidebarCollapsed" class="sub-menu" @click.stop>
             <!-- 客户管理（二级菜单） -->
             <div class="sub-menu-item" :class="{ active: showCustomerManageMenu }" @click.stop="toggleCustomerManageMenu">
-              <el-icon><UserFilled /></el-icon>
               <span>客户管理</span>
               <el-icon class="arrow-icon" :class="{ 'is-expand': showCustomerManageMenu }"><ArrowRight /></el-icon>
             </div>
             <!-- 客户管理二级子菜单 -->
             <div v-if="showCustomerManageMenu" class="sub-menu level-2" @click.stop>
               <div class="sub-menu-item" :class="{ active: currentModule === 'customerInfoList' || currentModule === 'customerInfoDetail' }" @click="handleCustomerManageItem('customerInfoList')">
-                <el-icon><User /></el-icon>
                 <span>客户基础信息</span>
               </div>
               <div class="sub-menu-item" :class="{ active: currentModule === 'customerAudit' }" @click="handleCustomerManageItem('customerAudit')">
-                <el-icon><DocumentChecked /></el-icon>
                 <span>客户业务审核</span>
               </div>
             </div>
             <!-- 销售品管理（二级菜单） -->
             <div class="sub-menu-item" :class="{ active: showProductManageMenu }" @click.stop="toggleProductManageMenu">
-              <el-icon><Collection /></el-icon>
               <span>销售品管理</span>
               <el-icon class="arrow-icon" :class="{ 'is-expand': showProductManageMenu }"><ArrowRight /></el-icon>
             </div>
             <!-- 销售品管理二级子菜单 -->
             <div v-if="showProductManageMenu" class="sub-menu level-2" @click.stop>
               <div class="sub-menu-item" :class="{ active: currentModule === 'keywordManage' }" @click="handleProductManageItem('keywordManage')">
-                <el-icon><Collection /></el-icon>
-                <span>销售品关键字管理</span>
+                <span>销售品关键字</span>
               </div>
               <div class="sub-menu-item" :class="{ active: currentModule === 'synonymKeywordManage' }" @click="handleProductManageItem('synonymKeywordManage')">
-                <el-icon><Link /></el-icon>
-                <span>同义关键字管理</span>
+                <span>同义关键字</span>
               </div>
               <div class="sub-menu-item" :class="{ active: currentModule === 'associateKeywordManage' }" @click="handleProductManageItem('associateKeywordManage')">
-                <el-icon><Connection /></el-icon>
-                <span>联想关键字管理</span>
+                <span>联想关键字</span>
               </div>
               <div class="sub-menu-item" :class="{ active: currentModule === 'salesUnitManage' }" @click="handleProductManageItem('salesUnitManage')">
-                <el-icon><OfficeBuilding /></el-icon>
-                <span>销售单元信息管理</span>
+                <span>销售单元信息</span>
               </div>
               <div class="sub-menu-item" :class="{ active: currentModule === 'keywordAudit' }" @click="handleProductManageItem('keywordAudit')">
-                <el-icon><DocumentChecked /></el-icon>
                 <span>销售品关键字审核</span>
               </div>
               <div class="sub-menu-item" :class="{ active: currentModule === 'salesUnitAudit' }" @click="handleProductManageItem('salesUnitAudit')">
-                <el-icon><DocumentChecked /></el-icon>
                 <span>销售单元信息审核</span>
               </div>
             </div>
             <div class="sub-menu-item" @click="handleOperationItem('keywordSelect')">
-              <el-icon><Key /></el-icon>
               <span>CRM关键字(嵌入CRM)</span>
             </div>
             <div class="sub-menu-item" @click="handleOperationItem('nonNumberInfoManage')">
-              <el-icon><Document /></el-icon>
               <span>非号码信息管理</span>
             </div>
             <div class="sub-menu-item" @click="handleOperationItem('aiDiversion')">
-              <el-icon><Cpu /></el-icon>
               <span>AI 接话分流管理</span>
             </div>
             <div class="sub-menu-item" @click="handleOperationItem('organization')">
-              <el-icon><OfficeBuilding /></el-icon>
               <span>组织架构（复用）</span>
+            </div>
+          </div>
+
+          <!-- 运营报表 -->
+          <div
+            class="nav-item"
+            :class="{ active: currentModule === 'operationReport' || showOperationReportMenu }"
+            @click="toggleOperationReportMenu"
+          >
+            <el-icon><TrendCharts /></el-icon>
+            <span v-if="!sidebarCollapsed">运营报表</span>
+            <el-tooltip v-else content="运营报表" placement="right">
+              <span class="nav-tooltip">运营报表</span>
+            </el-tooltip>
+          </div>
+
+          <!-- 运营报表子菜单 -->
+          <div v-if="showOperationReportMenu && !sidebarCollapsed" class="sub-menu" @click.stop>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'operatorReport' }" @click="handleOperationReportItem('operatorReport')">
+              <span>人工话务员接续报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'merchantQueryReport' }" @click="handleOperationReportItem('merchantQueryReport')">
+              <span>优推商家查询量报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'keywordQueryReport' }" @click="handleOperationReportItem('keywordQueryReport')">
+              <span>关键词查询量及资源统计报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'keywordSearchReport' }" @click="handleOperationReportItem('keywordSearchReport')">
+              <span>话务员输入关键词搜索量统计表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'merchantDataReport' }" @click="handleOperationReportItem('merchantDataReport')">
+              <span>114推广/百事通加盟商家数据报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'merchantCallReport' }" @click="handleOperationReportItem('merchantCallReport')">
+              <span>商家报号明细数据报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'provinceCallReport' }" @click="handleOperationReportItem('provinceCallReport')">
+              <span>全省综合话务统计报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'numberTransferReport' }" @click="handleOperationReportItem('numberTransferReport')">
+              <span>号码转接报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'operatorWorkReport' }" @click="handleOperationReportItem('operatorWorkReport')">
+              <span>操作员工作情况报表</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'operatorAttendanceReport' }" @click="handleOperationReportItem('operatorAttendanceReport')">
+              <span>操作员考勤统计</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'operatorBusyDetailReport' }" @click="handleOperationReportItem('operatorBusyDetailReport')">
+              <span>操作员示忙详情</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'numberQueryDetailReport' }" @click="handleOperationReportItem('numberQueryDetailReport')">
+              <span>号码查询明细</span>
+            </div>
+            <div class="sub-menu-item" :class="{ active: currentModule === 'userSatisfactionReport' }" @click="handleOperationReportItem('userSatisfactionReport')">
+              <span>用户满意度报表</span>
             </div>
           </div>
 
@@ -203,6 +245,71 @@
 
         <!-- 更新说明模块 -->
         <UpdateNotes v-else-if="currentModule === 'updateNotes'" />
+
+        <!-- 人工话务员接续报表 -->
+        <OperatorReport v-else-if="currentModule === 'operatorReport'" />
+
+        <!-- 优推商家查询量报表 -->
+        <MerchantQueryReport v-else-if="currentModule === 'merchantQueryReport'" />
+
+        <!-- 关键词查询量及资源统计报表 -->
+        <KeywordQueryReport v-else-if="currentModule === 'keywordQueryReport'" />
+
+        <!-- 话务员输入关键词搜索量统计表 -->
+        <KeywordSearchReport v-else-if="currentModule === 'keywordSearchReport'" />
+
+        <!-- 114推广/百事通加盟商家数据报表 -->
+        <MerchantDataReport v-else-if="currentModule === 'merchantDataReport'" />
+
+        <!-- 商家报号明细数据报表 -->
+        <MerchantCallReport v-else-if="currentModule === 'merchantCallReport' " />
+        <ProvinceCallReport v-else-if="currentModule === 'provinceCallReport' " />
+        <NumberTransferReport v-else-if="currentModule === 'numberTransferReport' " />
+        <OperatorWorkReport v-else-if="currentModule === 'operatorWorkReport' " />
+        <OperatorAttendanceReport v-else-if="currentModule === 'operatorAttendanceReport' " />
+        <OperatorBusyDetailReport v-else-if="currentModule === 'operatorBusyDetailReport' " />
+        <NumberQueryDetailReport v-else-if="currentModule === 'numberQueryDetailReport' " />
+        <UserSatisfactionReport v-else-if="currentModule === 'userSatisfactionReport' " />
+
+        <!-- 运营报表 - 日报表 -->
+        <div v-else-if="currentModule === 'dailyReport'" class="report-placeholder">
+          <el-empty description="日报表功能开发中">
+            <template #image>
+              <el-icon :size="60" color="#409eff"><TrendCharts /></el-icon>
+            </template>
+            <p>日报表模块正在开发中，敬请期待...</p>
+          </el-empty>
+        </div>
+
+        <!-- 运营报表 - 月报表 -->
+        <div v-else-if="currentModule === 'monthlyReport'" class="report-placeholder">
+          <el-empty description="月报表功能开发中">
+            <template #image>
+              <el-icon :size="60" color="#409eff"><TrendCharts /></el-icon>
+            </template>
+            <p>月报表模块正在开发中，敬请期待...</p>
+          </el-empty>
+        </div>
+
+        <!-- 运营报表 - 话务统计 -->
+        <div v-else-if="currentModule === 'callStatistics'" class="report-placeholder">
+          <el-empty description="话务统计功能开发中">
+            <template #image>
+              <el-icon :size="60" color="#409eff"><TrendCharts /></el-icon>
+            </template>
+            <p>话务统计模块正在开发中，敬请期待...</p>
+          </el-empty>
+        </div>
+
+        <!-- 运营报表 - 业务分析 -->
+        <div v-else-if="currentModule === 'businessAnalysis'" class="report-placeholder">
+          <el-empty description="业务分析功能开发中">
+            <template #image>
+              <el-icon :size="60" color="#409eff"><TrendCharts /></el-icon>
+            </template>
+            <p>业务分析模块正在开发中，敬请期待...</p>
+          </el-empty>
+        </div>
 
         <!-- 组织架构模块 -->
         <OrganizationManage v-else-if="currentModule === 'organization'" />
@@ -389,7 +496,7 @@ import {
   MoreFilled, Fold, Expand,
   QuestionFilled, ChatDotRound, Key, Management, InfoFilled, Collection, OfficeBuilding, DocumentChecked,
   Bell, Link, Connection, Check, Close, RefreshLeft, Cpu,
-  UserFilled, Grid, ArrowRight
+  UserFilled, Grid, ArrowRight, TrendCharts
 } from '@element-plus/icons-vue'
 import CallBar from './components/CallBar/CallBar.vue'
 
@@ -431,6 +538,31 @@ import NonNumberInfoManage from './components/Settings/NonNumberInfo/NonNumberIn
 // 更新说明组件
 import UpdateNotes from './components/Settings/UpdateNotes/UpdateNotes.vue'
 
+// 人工话务员接续报表组件
+import OperatorReport from './components/Reports/OperatorReport/OperatorReport.vue'
+
+// 优推商家查询量报表组件
+import MerchantQueryReport from './components/Reports/MerchantQueryReport/MerchantQueryReport.vue'
+
+// 关键词查询量及资源统计报表组件
+import KeywordQueryReport from './components/Reports/KeywordQueryReport/KeywordQueryReport.vue'
+
+// 话务员输入关键词搜索量统计表组件
+import KeywordSearchReport from './components/Reports/KeywordSearchReport/KeywordSearchReport.vue'
+
+// 114推广/百事通加盟商家数据报表组件
+import MerchantDataReport from './components/Reports/MerchantDataReport/MerchantDataReport.vue'
+
+// 商家报号明细数据报表组件
+import MerchantCallReport from './components/Reports/MerchantCallReport/MerchantCallReport.vue'
+import ProvinceCallReport from './components/Reports/ProvinceCallReport/ProvinceCallReport.vue'
+import NumberTransferReport from './components/Reports/NumberTransferReport/NumberTransferReport.vue'
+import OperatorWorkReport from './components/Reports/OperatorWorkReport/OperatorWorkReport.vue'
+import OperatorAttendanceReport from './components/Reports/OperatorAttendanceReport/OperatorAttendanceReport.vue'
+import OperatorBusyDetailReport from './components/Reports/OperatorBusyDetailReport/OperatorBusyDetailReport.vue'
+import NumberQueryDetailReport from './components/Reports/NumberQueryDetailReport/NumberQueryDetailReport.vue'
+import UserSatisfactionReport from './components/Reports/UserSatisfactionReport/UserSatisfactionReport.vue'
+
 // 组织架构管理组件
 import OrganizationManage from './components/Settings/Organization/OrganizationManage.vue'
 
@@ -446,8 +578,8 @@ import BottomUserInfo from './components/BottomUserInfo/BottomUserInfo.vue'
 // 页面说明组件 - 完全独立，与业务系统无任何关联
 import { PageInstructionDrawer } from './components/PageInstruction'
 
-// 当前显示的模块（默认号码本地搜）
-const currentModule = ref('numberSearch')
+// 当前显示的模块（默认更新说明页面）
+const currentModule = ref('updateNotes')
 
 // 侧边栏折叠状态
 const sidebarCollapsed = ref(false)
@@ -457,6 +589,9 @@ const showMoreMenu = ref(false)
 
 // 运营管理菜单显示状态
 const showOperationMenu = ref(false)
+
+// 运营报表菜单显示状态
+const showOperationReportMenu = ref(false)
 
 // 门框菜单显示状态
 const showDoorFrameMenu = ref(false)
@@ -510,16 +645,26 @@ const pageInstructionTitles: Record<string, string> = {
   customerInfoList: '客户基础信息',
   customerInfoDetail: '客户详情',
   customerAudit: '客户业务审核',
-  keywordManage: '销售品关键字管理',
-  synonymKeywordManage: '同义关键字管理',
-  associateKeywordManage: '联想关键字管理',
-  salesUnitManage: '销售单元信息管理',
+  keywordManage: '销售品关键字',
+  synonymKeywordManage: '同义关键字',
+  associateKeywordManage: '联想关键字',
+  salesUnitManage: '销售单元信息',
   keywordAudit: '销售品关键字审核',
   salesUnitAudit: '销售单元信息审核',
   keywordSelect: 'CRM关键字（嵌入CRM）',
   nonNumberInfoManage: '非号码信息管理',
   aiDiversion: 'AI接话分流管理',
-  organization: '组织架构（复用）'
+  organization: '组织架构（复用）',
+  operatorReport: '人工话务员接续报表',
+  merchantQueryReport: '优推商家查询量报表',
+  keywordQueryReport: '关键词查询量及资源统计报表',
+  keywordSearchReport: '话务员输入关键词搜索量统计表',
+  merchantDataReport: '114推广/百事通加盟商家数据报表',
+  merchantCallReport: '商家报号明细数据报表',
+  dailyReport: '日报表',
+  monthlyReport: '月报表',
+  callStatistics: '话务统计',
+  businessAnalysis: '业务分析'
 }
 
 // 是否显示页面说明按钮
@@ -646,6 +791,56 @@ const handleOperationItem = (item: string) => {
   } else if (item === 'aiDiversion') {
     currentModule.value = 'aiDiversion'
     // 保持运营管理菜单展开，不设置 showOperationMenu.value = false
+  }
+}
+
+// 切换运营报表菜单
+const toggleOperationReportMenu = () => {
+  showOperationReportMenu.value = !showOperationReportMenu.value
+}
+
+// 处理运营报表菜单项
+const handleOperationReportItem = (item: string) => {
+  console.log('点击运营报表菜单项:', item)
+  if (item === 'operatorReport') {
+    currentModule.value = 'operatorReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'merchantQueryReport') {
+    currentModule.value = 'merchantQueryReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'keywordQueryReport') {
+    currentModule.value = 'keywordQueryReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'keywordSearchReport') {
+    currentModule.value = 'keywordSearchReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'merchantDataReport') {
+    currentModule.value = 'merchantDataReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'merchantCallReport') {
+    currentModule.value = 'merchantCallReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'provinceCallReport') {
+    currentModule.value = 'provinceCallReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'numberTransferReport') {
+    currentModule.value = 'numberTransferReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'operatorWorkReport') {
+    currentModule.value = 'operatorWorkReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'operatorAttendanceReport') {
+    currentModule.value = 'operatorAttendanceReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'operatorBusyDetailReport') {
+    currentModule.value = 'operatorBusyDetailReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'numberQueryDetailReport') {
+    currentModule.value = 'numberQueryDetailReport'
+    // 保持运营报表菜单展开
+  } else if (item === 'userSatisfactionReport') {
+    currentModule.value = 'userSatisfactionReport'
+    // 保持运营报表菜单展开
   }
 }
 
@@ -814,7 +1009,7 @@ $sidebar-active: #00a8ff;
   left: 0;
   top: 0; // 上移到顶部
   bottom: 0;
-  width: 200px;
+  width: 220px;
   background: $sidebar-bg;
   transition: width 0.3s ease;
   z-index: 999;
@@ -938,12 +1133,15 @@ $sidebar-active: #00a8ff;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 20px 8px 56px;
+    padding: 8px 16px 8px 56px;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.2s;
     font-size: 13px;
     border-left: 3px solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover {
       color: #fff;
@@ -977,13 +1175,32 @@ $sidebar-active: #00a8ff;
     padding: 4px 0;
 
     .sub-menu-item {
-      padding: 8px 20px 8px 76px;
+      padding: 8px 16px 8px 76px;
       font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       .el-icon {
         font-size: 13px;
       }
     }
+  }
+}
+
+// 运营报表占位样式
+.report-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  background: #fff;
+  border-radius: 8px;
+
+  p {
+    margin-top: 16px;
+    color: #909399;
+    font-size: 14px;
   }
 }
 
@@ -1073,7 +1290,7 @@ $sidebar-active: #00a8ff;
 // 调整主内容区域高度，为底部来电用户面板和底部用户信息栏留出空间
 .main-content {
   flex: 1;
-  margin-left: 200px;
+  margin-left: 220px;
   padding: 12px 16px; // 减小padding
   transition: margin-left 0.3s ease;
   height: calc(100vh - 48px - 52px - 40px); // 减去话务条高度48px、来电用户面板约52px和底部信息栏40px

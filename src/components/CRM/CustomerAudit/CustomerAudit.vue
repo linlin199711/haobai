@@ -11,144 +11,153 @@
         <el-icon size="24" color="#1a5fb4"><DocumentChecked /></el-icon>
         <span>客户业务信息审核</span>
       </div>
-      <div class="header-tip">
-        <el-icon size="14" color="#e6a23c"><Warning /></el-icon>
-        <span>根据号百要求，该页面进行行业改造，请注意行业选择</span>
-      </div>
     </div>
 
-    <!-- 查询筛选区 -->
-    <div class="query-section">
-      <div class="query-row">
-        <div class="query-item">
-          <span class="query-label">客户名称：</span>
-          <el-input
-            v-model="queryForm.customerName"
-            placeholder="请输入客户名称"
-            clearable
-            class="query-input"
-            @keyup.enter="handleSearch"
-          />
-        </div>
-        <div class="query-item">
-          <span class="query-label">电话号码：</span>
-          <el-input
-            v-model="queryForm.phone"
-            placeholder="请输入电话号码"
-            clearable
-            class="query-input"
-            @keyup.enter="handleSearch"
-          />
-        </div>
-        <div class="query-item">
-          <span class="query-label">信息来源：</span>
-          <el-select v-model="queryForm.source" placeholder="CRM" clearable class="query-select">
-            <el-option label="CRM" value="CRM" />
-            <el-option label="PF工单" value="PF" />
-            <el-option label="手工录入" value="MANUAL" />
-          </el-select>
-        </div>
-      </div>
-      <div class="query-row">
-        <div class="query-item">
-          <span class="query-label">采编时间：</span>
-          <el-date-picker
-            v-model="queryForm.dateRange"
-            type="daterange"
-            range-separator="到"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="query-date"
-          />
-        </div>
-        <div class="query-item">
-          <span class="query-label">审核状态：</span>
-          <el-select v-model="queryForm.auditStatus" placeholder="全部" clearable class="query-select">
-            <el-option label="未审核" value="pending" />
-            <el-option label="已审核" value="approved" />
-            <el-option label="已注销" value="cancelled" />
-          </el-select>
-        </div>
-        <div class="query-item">
-          <span class="query-label">行业：</span>
-          <el-select v-model="queryForm.industry" placeholder="全部" clearable class="query-select">
-            <el-option label="交通运输" value="交通运输" />
-            <el-option label="制造业" value="制造业" />
-            <el-option label="环保科技" value="环保科技" />
-            <el-option label="医疗卫生" value="医疗卫生" />
-            <el-option label="教育" value="教育" />
-          </el-select>
-        </div>
-      </div>
-      <div class="query-row">
-        <div class="query-item">
-          <span class="query-label">地区：</span>
-          <el-select v-model="queryForm.region" placeholder="泉州" clearable class="query-select">
-            <el-option label="泉州市" value="泉州市" />
-            <el-option label="福州市" value="福州市" />
-            <el-option label="厦门市" value="厦门市" />
-          </el-select>
-        </div>
-        <div class="query-item">
-          <span class="query-label">锁定状态：</span>
-          <el-select v-model="queryForm.lockStatus" placeholder="全部" clearable class="query-select">
-            <el-option label="未锁定" value="unlocked" />
-            <el-option label="已锁定" value="locked" />
-          </el-select>
-        </div>
-        <div class="query-item">
-          <span class="query-label">录入员：</span>
-          <el-select v-model="queryForm.creator" placeholder="全部" clearable class="query-select">
-            <el-option label="张三" value="张三" />
-            <el-option label="李四" value="李四" />
-            <el-option label="王五" value="王五" />
-          </el-select>
-        </div>
-      </div>
-      <div class="query-row">
-        <div class="query-item">
-          <span class="query-label">转警类型：</span>
-          <el-select v-model="queryForm.alertType" placeholder="所有" clearable class="query-select">
-            <el-option label="所有" value="all" />
-            <el-option label="转警" value="alert" />
-            <el-option label="未转警" value="no_alert" />
-          </el-select>
-        </div>
-        <div class="query-item">
-          <span class="query-label">业务类型：</span>
-          <el-select v-model="queryForm.productType" placeholder="所有" clearable class="query-select">
-            <el-option label="查询转接" value="query_transfer" />
-            <el-option label="实名查询" value="real_name_query" />
-            <el-option label="短信名片" value="sms_card" />
-            <el-option label="优先报号" value="priority_report" />
-          </el-select>
-        </div>
-        <div class="query-item">
-          <span class="query-label">操作类型：</span>
-          <el-select v-model="queryForm.operationType" placeholder="所有" clearable class="query-select">
-            <el-option label="新增" value="add" />
-            <el-option label="修改" value="modify" />
-            <el-option label="注销" value="cancel" />
-          </el-select>
-        </div>
-      </div>
-      <div class="query-actions">
-        <el-button type="primary" :loading="loading" @click="handleSearch">
-          <el-icon><Search /></el-icon>
-          查询(Q)
-        </el-button>
-        <el-button @click="handleReset">
-          <el-icon><RefreshRight /></el-icon>
-          重置
-        </el-button>
-      </div>
-    </div>
+    <!-- 查询筛选区 - 参考客户基础信息页面样式 -->
+    <el-card class="filter-card" shadow="never">
+      <el-form
+        ref="filterFormRef"
+        :model="queryForm"
+        label-width="100px"
+        class="filter-form"
+      >
+        <el-row :gutter="20">
+          <!-- 客户名称 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="客户名称">
+              <el-input
+                v-model="queryForm.customerName"
+                placeholder="请输入客户名称"
+                clearable
+                maxlength="50"
+                @keyup.enter="handleSearch"
+              />
+            </el-form-item>
+          </el-col>
 
-    <!-- 查询列表标题 -->
-    <div class="list-header">
-      <el-icon><List /></el-icon>
-      <span>查询列表</span>
-    </div>
+          <!-- 电话号码 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="电话号码">
+              <el-input
+                v-model="queryForm.phone"
+                placeholder="请输入电话号码"
+                clearable
+                maxlength="20"
+                @keyup.enter="handleSearch"
+              />
+            </el-form-item>
+          </el-col>
+
+          <!-- 采编时间 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="采编时间">
+              <el-date-picker
+                v-model="queryForm.dateRange"
+                type="daterange"
+                range-separator="到"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
+
+          <!-- 行业 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="行业">
+              <el-select
+                v-model="queryForm.industry"
+                placeholder="全部"
+                clearable
+                style="width: 100%"
+              >
+                <el-option label="交通运输" value="交通运输" />
+                <el-option label="制造业" value="制造业" />
+                <el-option label="环保科技" value="环保科技" />
+                <el-option label="医疗卫生" value="医疗卫生" />
+                <el-option label="教育" value="教育" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <!-- 地区 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="地区">
+              <el-select
+                v-model="queryForm.region"
+                placeholder="全部"
+                clearable
+                style="width: 100%"
+              >
+                <el-option label="泉州市" value="泉州市" />
+                <el-option label="福州市" value="福州市" />
+                <el-option label="厦门市" value="厦门市" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <!-- 锁定状态 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="锁定状态">
+              <el-select
+                v-model="queryForm.lockStatus"
+                placeholder="全部"
+                clearable
+                style="width: 100%"
+              >
+                <el-option label="未锁定" value="unlocked" />
+                <el-option label="已锁定" value="locked" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <!-- 业务类型 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="业务类型">
+              <el-select
+                v-model="queryForm.productType"
+                placeholder="全部"
+                clearable
+                style="width: 100%"
+              >
+                <el-option label="查询转接" value="query_transfer" />
+                <el-option label="实名查询" value="real_name_query" />
+                <el-option label="短信名片" value="sms_card" />
+                <el-option label="优先报号" value="priority_report" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <!-- 操作类型 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="操作类型">
+              <el-select
+                v-model="queryForm.operationType"
+                placeholder="全部"
+                clearable
+                style="width: 100%"
+              >
+                <el-option label="新增" value="add" />
+                <el-option label="修改" value="modify" />
+                <el-option label="注销" value="cancel" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- 操作按钮 - 右对齐 -->
+        <el-row :gutter="20" justify="end">
+          <el-col :span="24" class="filter-buttons">
+            <el-button @click="handleReset">
+              重置
+            </el-button>
+            <el-button type="primary" :loading="loading" @click="handleSearch">
+              查询
+            </el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
 
     <!-- 表格展示区 -->
     <div class="table-section">
@@ -321,7 +330,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { DocumentChecked, Warning, Search, RefreshRight, List } from '@element-plus/icons-vue'
+import { DocumentChecked } from '@element-plus/icons-vue'
 import type { CustomerBusinessAggregate, CustomerAuditQueryParams } from './types/customerAudit'
 import { AuditStatusEnum, AuditStatusLabels, AuditStatusColors } from './types/customerAudit'
 import { getCustomerAuditList, currentUserPermission, logOperation } from './mock/customerAuditMock'
@@ -331,19 +340,16 @@ import AuditDialog from './components/AuditDialog.vue'
 const loading = ref(false)
 const customerList = ref<CustomerBusinessAggregate[]>([])
 const selectedRows = ref<CustomerBusinessAggregate[]>([])
+const filterFormRef = ref()
 
 // 查询表单
 const queryForm = reactive({
   customerName: '',
   phone: '',
-  source: 'CRM',
   dateRange: null,
-  auditStatus: '',
   industry: '',
-  region: '泉州市',
+  region: '',
   lockStatus: '',
-  creator: '',
-  alertType: '',
   productType: '',
   operationType: '',
   page: 1,
@@ -388,11 +394,9 @@ const loadCustomerList = async () => {
       phone: queryForm.phone || undefined,
       region: queryForm.region || undefined,
       industry: queryForm.industry || undefined,
-      auditStatus: queryForm.auditStatus || undefined,
       lockStatus: queryForm.lockStatus || undefined,
       productType: queryForm.productType || undefined,
       operationType: queryForm.operationType || undefined,
-      source: queryForm.source || undefined,
       page: queryForm.page,
       pageSize: queryForm.pageSize
     }
@@ -427,14 +431,10 @@ const handleSearch = () => {
 const handleReset = () => {
   queryForm.customerName = ''
   queryForm.phone = ''
-  queryForm.source = 'CRM'
   queryForm.dateRange = null
-  queryForm.auditStatus = ''
   queryForm.industry = ''
-  queryForm.region = '泉州市'
+  queryForm.region = ''
   queryForm.lockStatus = ''
-  queryForm.creator = ''
-  queryForm.alertType = ''
   queryForm.productType = ''
   queryForm.operationType = ''
   queryForm.page = 1
@@ -509,86 +509,24 @@ onMounted(() => {
     font-size: 18px;
     font-weight: 600;
     color: #303133;
-    margin-bottom: 8px;
-  }
-
-  .header-tip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: #e6a23c;
   }
 }
 
-// 查询筛选区
-.query-section {
+// 筛选卡片样式 - 参考客户基础信息页面
+.filter-card {
   margin-bottom: 16px;
-  padding: 16px;
-  background: #e8f5e9;
-  border-radius: 4px;
-  border: 1px solid #c8e6c9;
 
-  .query-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 12px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .query-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-
-    .query-label {
-      font-size: 13px;
-      color: #303133;
-      white-space: nowrap;
-      min-width: 70px;
-      text-align: right;
-    }
-
-    .query-input {
-      width: 160px;
-    }
-
-    .query-select {
-      width: 140px;
-    }
-
-    .query-date {
-      width: 280px;
-    }
-  }
-
-  .query-actions {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px dashed #c8e6c9;
+  :deep(.el-card__body) {
+    padding: 20px;
   }
 }
 
-// 列表标题
-.list-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding: 10px 16px;
-  background: #c8e6c9;
-  border-radius: 4px 4px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #2e7d32;
+.filter-form {
+  .filter-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
 }
 
 // 表格展示区

@@ -1,7 +1,7 @@
 <!--
   系统更新说明页面
-  @description 记录和展示系统原型设计更新情况，支持本地持久化存储
-  @version 1.0.0
+  @description 记录和展示系统原型设计更新情况，数据存储在 GitHub 实现跨浏览器跨用户共享
+  @version 2.0.0
 -->
 <template>
   <div class="update-notes-page">
@@ -11,7 +11,76 @@
         <el-icon><Document /></el-icon>
         系统更新说明
       </h2>
-      <p class="page-subtitle">记录系统原型设计更新情况，数据本地持久化保存</p>
+      <p class="page-subtitle">
+        记录系统原型设计更新情况，数据存储在 GitHub 实现跨浏览器跨用户共享
+        <el-tag v-if="rateLimit.remaining > 0" size="small" :type="rateLimit.remaining < 100 ? 'danger' : 'success'" class="rate-limit">
+          API: {{ rateLimit.remaining }}
+        </el-tag>
+      </p>
+    </div>
+
+    <!-- 历史记录列表 -->
+    <div class="history-section">
+      <el-card shadow="never" class="history-card" v-loading="loading">
+        <template #header>
+          <div class="card-header">
+            <span>更新历史记录</span>
+            <div class="header-actions">
+              <el-tag type="info">共 {{ historyList.length }} 条记录</el-tag>
+              <el-button type="danger" link @click="handleClearAll" v-if="historyList.length > 0">
+                <el-icon><Delete /></el-icon>
+                清空全部
+              </el-button>
+            </div>
+          </div>
+        </template>
+
+        <div v-if="historyList.length === 0" class="empty-state">
+          <el-empty description="暂无更新记录">
+            <template #image>
+              <el-icon :size="60" color="#c0c4cc"><Document /></el-icon>
+            </template>
+          </el-empty>
+        </div>
+
+        <div v-else class="history-list">
+          <div
+            v-for="item in sortedHistoryList"
+            :key="item.id"
+            class="history-item"
+            :class="{ 'is-editing': isEdit && currentEditId === item.id }"
+          >
+            <div class="item-header">
+              <div class="item-meta">
+                <el-tag type="primary" effect="light" class="date-tag">
+                  <el-icon><Calendar /></el-icon>
+                  {{ item.updateDate }}
+                </el-tag>
+                <span class="module-name">{{ item.moduleName }}</span>
+              </div>
+              <div class="item-actions">
+                <el-button type="primary" link size="small" @click="handleEdit(item)">
+                  <el-icon><Edit /></el-icon>
+                  编辑
+                </el-button>
+                <el-button type="danger" link size="small" @click="handleDelete(item.id)">
+                  <el-icon><Delete /></el-icon>
+                  删除
+                </el-button>
+              </div>
+            </div>
+            <div class="item-content">
+              <p>{{ item.content }}</p>
+            </div>
+            <div class="item-footer">
+              <span class="update-time">
+                <el-icon><Timer /></el-icon>
+                记录时间：{{ item.createTime }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </el-card>
     </div>
 
     <!-- 编辑表单区域 -->
@@ -85,70 +154,6 @@
         </el-form>
       </el-card>
     </div>
-
-    <!-- 历史记录列表 -->
-    <div class="history-section">
-      <el-card shadow="never" class="history-card">
-        <template #header>
-          <div class="card-header">
-            <span>更新历史记录</span>
-            <div class="header-actions">
-              <el-tag type="info">共 {{ historyList.length }} 条记录</el-tag>
-              <el-button type="danger" link @click="handleClearAll" v-if="historyList.length > 0">
-                <el-icon><Delete /></el-icon>
-                清空全部
-              </el-button>
-            </div>
-          </div>
-        </template>
-
-        <div v-if="historyList.length === 0" class="empty-state">
-          <el-empty description="暂无更新记录">
-            <template #image>
-              <el-icon :size="60" color="#c0c4cc"><Document /></el-icon>
-            </template>
-          </el-empty>
-        </div>
-
-        <div v-else class="history-list">
-          <div
-            v-for="item in sortedHistoryList"
-            :key="item.id"
-            class="history-item"
-            :class="{ 'is-editing': isEdit && currentEditId === item.id }"
-          >
-            <div class="item-header">
-              <div class="item-meta">
-                <el-tag type="primary" effect="light" class="date-tag">
-                  <el-icon><Calendar /></el-icon>
-                  {{ item.updateDate }}
-                </el-tag>
-                <span class="module-name">{{ item.moduleName }}</span>
-              </div>
-              <div class="item-actions">
-                <el-button type="primary" link size="small" @click="handleEdit(item)">
-                  <el-icon><Edit /></el-icon>
-                  编辑
-                </el-button>
-                <el-button type="danger" link size="small" @click="handleDelete(item.id)">
-                  <el-icon><Delete /></el-icon>
-                  删除
-                </el-button>
-              </div>
-            </div>
-            <div class="item-content">
-              <p>{{ item.content }}</p>
-            </div>
-            <div class="item-footer">
-              <span class="update-time">
-                <el-icon><Timer /></el-icon>
-                记录时间：{{ item.createTime }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </el-card>
-    </div>
   </div>
 </template>
 
@@ -166,38 +171,22 @@ import {
   Timer,
   Close
 } from '@element-plus/icons-vue'
+import type { UpdateNoteItem, FormData } from './types/updateNotes'
+import {
+  getUpdateNotesFromGitHub,
+  saveUpdateNotesToGitHub,
+  getGitHubRateLimit
+} from './service'
 
-// ==================== 类型定义 ====================
-interface UpdateNoteItem {
-  /** 唯一标识 */
-  id: string
-  /** 更新日期 */
-  updateDate: string
-  /** 功能模块名称 */
-  moduleName: string
-  /** 更新内容 */
-  content: string
-  /** 记录创建时间 */
-  createTime: string
-  /** 最后更新时间 */
-  updateTime: string
-}
-
-interface FormData {
-  updateDate: string
-  moduleName: string
-  content: string
-}
-
-// ==================== LocalStorage Key ====================
-const STORAGE_KEY = 'callcenter_update_notes'
-
-// ==================== 响应式数据 ====================
+// 响应式数据
 const formRef = ref<FormInstance>()
 const saving = ref(false)
+const loading = ref(false)
 const isEdit = ref(false)
 const currentEditId = ref<string>('')
 const historyList = ref<UpdateNoteItem[]>([])
+const fileSha = ref<string>('')
+const rateLimit = ref({ remaining: 0, limit: 5000 })
 
 // 表单数据
 const formData = reactive<FormData>({
@@ -228,47 +217,55 @@ const sortedHistoryList = computed(() => {
   })
 })
 
-// ==================== 本地存储操作 ====================
-
-/**
- * 从 LocalStorage 加载数据
- */
-const loadFromStorage = () => {
+// 从 GitHub 加载数据
+const loadFromGitHub = async () => {
+  loading.value = true
   try {
-    const data = localStorage.getItem(STORAGE_KEY)
-    if (data) {
-      historyList.value = JSON.parse(data)
-      console.log('[UpdateNotes] 从本地存储加载数据:', historyList.value.length, '条')
+    const [result, rateResult] = await Promise.all([
+      getUpdateNotesFromGitHub(),
+      getGitHubRateLimit()
+    ])
+
+    if (result.success && result.data) {
+      historyList.value = result.data
+      fileSha.value = result.sha || ''
+    }
+
+    if (rateResult.success && rateResult.data) {
+      rateLimit.value = rateResult.data
     }
   } catch (error) {
-    console.error('[UpdateNotes] 加载本地数据失败:', error)
+    console.error('[UpdateNotes] 加载数据失败:', error)
     ElMessage.error('加载历史记录失败')
+  } finally {
+    loading.value = false
   }
 }
 
-/**
- * 保存到 LocalStorage
- */
-const saveToStorage = () => {
+// 保存到 GitHub
+const saveToGitHub = async (): Promise<boolean> => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(historyList.value))
-    console.log('[UpdateNotes] 已保存到本地存储:', historyList.value.length, '条')
+    const result = await saveUpdateNotesToGitHub(historyList.value, fileSha.value)
+    if (result.success && result.data) {
+      fileSha.value = result.sha || ''
+      return true
+    } else {
+      ElMessage.error(result.message || '保存失败')
+      return false
+    }
   } catch (error) {
-    console.error('[UpdateNotes] 保存到本地失败:', error)
-    throw error
+    console.error('[UpdateNotes] 保存到 GitHub 失败:', error)
+    ElMessage.error('保存失败，请重试')
+    return false
   }
 }
 
-/**
- * 生成唯一ID
- */
+// 生成唯一ID
 const generateId = () => {
   return 'note_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
 }
 
-/**
- * 获取当前格式化时间
- */
+// 获取当前格式化时间
 const getCurrentTime = () => {
   const now = new Date()
   return now.toLocaleString('zh-CN', {
@@ -281,21 +278,15 @@ const getCurrentTime = () => {
   })
 }
 
-// ==================== 表单操作 ====================
-
-/**
- * 保存记录
- */
+// 保存记录
 const handleSave = async () => {
   if (!formRef.value) return
 
-  await formRef.value.validate((valid) => {
+  await formRef.value.validate(async (valid) => {
     if (valid) {
       saving.value = true
-
       try {
         if (isEdit.value && currentEditId.value) {
-          // 编辑模式：更新已有记录
           const index = historyList.value.findIndex(item => item.id === currentEditId.value)
           if (index !== -1) {
             historyList.value[index] = {
@@ -305,10 +296,8 @@ const handleSave = async () => {
               content: formData.content,
               updateTime: getCurrentTime()
             }
-            ElMessage.success('记录修改成功')
           }
         } else {
-          // 新增模式：添加新记录
           const newItem: UpdateNoteItem = {
             id: generateId(),
             updateDate: formData.updateDate,
@@ -318,14 +307,13 @@ const handleSave = async () => {
             updateTime: getCurrentTime()
           }
           historyList.value.unshift(newItem)
-          ElMessage.success('记录保存成功')
         }
 
-        // 保存到本地存储
-        saveToStorage()
-
-        // 重置表单
-        handleReset()
+        const success = await saveToGitHub()
+        if (success) {
+          ElMessage.success(isEdit.value ? '记录修改成功' : '记录保存成功')
+          handleReset()
+        }
       } catch (error) {
         ElMessage.error('保存失败，请重试')
       } finally {
@@ -335,9 +323,7 @@ const handleSave = async () => {
   })
 }
 
-/**
- * 重置表单
- */
+// 重置表单
 const handleReset = () => {
   formData.updateDate = ''
   formData.moduleName = ''
@@ -347,33 +333,24 @@ const handleReset = () => {
   formRef.value?.resetFields()
 }
 
-/**
- * 取消编辑
- */
+// 取消编辑
 const handleCancelEdit = () => {
   handleReset()
   ElMessage.info('已取消编辑')
 }
 
-// ==================== 历史记录操作 ====================
-
-/**
- * 编辑记录
- */
+// 编辑记录
 const handleEdit = (item: UpdateNoteItem) => {
   formData.updateDate = item.updateDate
   formData.moduleName = item.moduleName
   formData.content = item.content
   isEdit.value = true
   currentEditId.value = item.id
-
   // 滚动到表单区域
   document.querySelector('.form-section')?.scrollIntoView({ behavior: 'smooth' })
 }
 
-/**
- * 删除记录
- */
+// 删除记录
 const handleDelete = async (id: string) => {
   try {
     await ElMessageBox.confirm('确定要删除这条更新记录吗？', '确认删除', {
@@ -385,23 +362,20 @@ const handleDelete = async (id: string) => {
     const index = historyList.value.findIndex(item => item.id === id)
     if (index !== -1) {
       historyList.value.splice(index, 1)
-      saveToStorage()
-
-      // 如果正在编辑这条记录，重置表单
-      if (currentEditId.value === id) {
-        handleReset()
+      const success = await saveToGitHub()
+      if (success) {
+        if (currentEditId.value === id) {
+          handleReset()
+        }
+        ElMessage.success('删除成功')
       }
-
-      ElMessage.success('删除成功')
     }
   } catch {
     // 取消删除
   }
 }
 
-/**
- * 清空全部记录
- */
+// 清空全部记录
 const handleClearAll = async () => {
   try {
     await ElMessageBox.confirm(
@@ -415,17 +389,19 @@ const handleClearAll = async () => {
     )
 
     historyList.value = []
-    saveToStorage()
-    handleReset()
-    ElMessage.success('已清空全部记录')
+    const success = await saveToGitHub()
+    if (success) {
+      handleReset()
+      ElMessage.success('已清空全部记录')
+    }
   } catch {
     // 取消操作
   }
 }
 
-// ==================== 生命周期 ====================
+// 生命周期
 onMounted(() => {
-  loadFromStorage()
+  loadFromGitHub()
 })
 </script>
 
@@ -436,7 +412,6 @@ onMounted(() => {
   background-color: #f5f7fa;
 }
 
-// 页面头部
 .page-header {
   margin-bottom: 20px;
   padding-bottom: 16px;
@@ -461,47 +436,19 @@ onMounted(() => {
     margin: 0;
     font-size: 14px;
     color: #909399;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .rate-limit {
+      font-size: 11px;
+    }
   }
 }
 
-// 表单区域
-.form-section {
+.history-section {
   margin-bottom: 20px;
 
-  .form-card {
-    border-radius: 8px;
-
-    :deep(.el-card__header) {
-      padding: 15px 20px;
-      background-color: #fafafa;
-      border-bottom: 1px solid #ebeef5;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 500;
-      color: #303133;
-    }
-  }
-
-  .update-form {
-    padding: 10px 0;
-
-    :deep(.el-date-editor) {
-      width: 100%;
-    }
-
-    :deep(.el-textarea__inner) {
-      resize: vertical;
-      min-height: 100px;
-    }
-  }
-}
-
-// 历史记录区域
-.history-section {
   .history-card {
     border-radius: 8px;
 
@@ -531,7 +478,6 @@ onMounted(() => {
   }
 }
 
-// 历史记录列表
 .history-list {
   display: flex;
   flex-direction: column;
@@ -621,7 +567,39 @@ onMounted(() => {
   }
 }
 
-// 响应式适配
+.form-section {
+  .form-card {
+    border-radius: 8px;
+
+    :deep(.el-card__header) {
+      padding: 15px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid #ebeef5;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      color: #303133;
+    }
+  }
+
+  .update-form {
+    padding: 10px 0;
+
+    :deep(.el-date-editor) {
+      width: 100%;
+    }
+
+    :deep(.el-textarea__inner) {
+      resize: vertical;
+      min-height: 100px;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .update-notes-page {
     padding: 12px;

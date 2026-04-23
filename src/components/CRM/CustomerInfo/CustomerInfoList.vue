@@ -141,7 +141,7 @@
         <el-row :gutter="20" justify="end">
           <el-col :span="24" class="filter-buttons">
             <el-button type="primary" :icon="Plus" @click="handleAdd">
-              新增知识库
+              新增客户信息
             </el-button>
             <el-button @click="handleReset">
               重置

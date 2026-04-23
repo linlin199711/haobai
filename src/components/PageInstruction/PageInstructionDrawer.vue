@@ -18,7 +18,9 @@
       size="600px"
       :close-on-click-modal="true"
       :destroy-on-close="false"
-      class="page-instruction-drawer"
+      class="page-instruction-drawer page-instruction-drawer-wrapper"
+      modal-class="page-instruction-modal"
+      :style="{ top: '64px', bottom: '120px', height: 'auto' }"
       @close="handleClose"
     >
       <div class="drawer-content">
@@ -142,7 +144,7 @@
  * 页面说明抽屉组件
  * 完全独立，与业务系统无任何关联
  */
-import { ref, shallowRef, computed, watch } from 'vue'
+import { ref, shallowRef, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { QuestionFilled, Edit, Check, Close, RefreshLeft } from '@element-plus/icons-vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
@@ -183,11 +185,11 @@ const editorRef = shallowRef<IDomEditor | null>(null)
 // 工具栏配置
 const toolbarConfig: Partial<IToolbarConfig> = {
   excludeKeys: [
-    'insertVideo',  // 不显示视频上传
-    'insertTable',  // 不显示表格
-    'codeBlock',    // 不显示代码块
-    'divider',      // 不显示分割线
-    'fullScreen'    // 不显示全屏
+    'insertVideo',
+    'insertTable',
+    'codeBlock',
+    'divider',
+    'fullScreen'
   ]
 }
 
@@ -197,7 +199,6 @@ const editorConfig: Partial<IEditorConfig> = {
   autoFocus: false,
   scroll: true,
   MENU_CONF: {
-    // 图片上传配置
     uploadImage: {
       async customUpload(file: File, insertFn: (url: string, alt?: string, href?: string) => void) {
         try {
@@ -213,7 +214,6 @@ const editorConfig: Partial<IEditorConfig> = {
         }
       }
     },
-    // 字体大小配置
     fontSize: {
       fontSizeList: [
         '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px'
@@ -250,7 +250,6 @@ const loadData = async () => {
   error.value = ''
 
   try {
-    // 并行获取页面说明和限流信息
     const [result, rateResult] = await Promise.all([
       getPageInstruction(props.pageId, props.pageTitle),
       getGitHubRateLimit()
@@ -262,7 +261,6 @@ const loadData = async () => {
       error.value = result.message || '加载失败'
     }
 
-    // 更新限流信息
     if (rateResult.success && rateResult.data) {
       rateLimit.value = rateResult.data
     }
@@ -282,7 +280,6 @@ const handleOpen = async () => {
 
 // 关闭抽屉
 const handleClose = () => {
-  // 如果有未保存的编辑，提示确认
   if (isEditing.value && editContent.value !== originalContent.value) {
     ElMessageBox.confirm(
       '当前有未保存的修改，是否确认关闭？',
@@ -298,9 +295,7 @@ const handleClose = () => {
         visible.value = false
         emit('close')
       })
-      .catch(() => {
-        // 取消关闭
-      })
+      .catch(() => {})
   } else {
     visible.value = false
     emit('close')
@@ -329,7 +324,6 @@ const handleSave = async () => {
   saving.value = true
 
   try {
-    // 获取当前文件的 sha（如果存在）
     const currentSha = currentData.value?.sha
 
     const result = await savePageInstruction(
@@ -369,18 +363,14 @@ const handleCancel = () => {
       .then(() => {
         editContent.value = originalContent.value
         isEditing.value = false
-        // 销毁编辑器实例
         if (editorRef.value) {
           editorRef.value.destroy()
           editorRef.value = null
         }
       })
-      .catch(() => {
-        // 继续编辑
-      })
+      .catch(() => {})
   } else {
     isEditing.value = false
-    // 销毁编辑器实例
     if (editorRef.value) {
       editorRef.value.destroy()
       editorRef.value = null
@@ -404,16 +394,14 @@ const handleReset = async () => {
     const result = await resetToDefault(props.pageId, props.pageTitle)
     if (result.success && result.data) {
       currentData.value = result.data
-      ElMessage.success('已恢复为默认内容（刷新页面后生效）')
+      ElMessage.success('已恢复为默认内容')
     } else {
       ElMessage.error(result.message || '恢复失败')
     }
-  } catch {
-    // 用户取消
-  }
+  } catch {}
 }
 
-// 监听抽屉关闭，清理编辑器
+// 监听抽屉关闭
 watch(visible, (val) => {
   if (!val && editorRef.value) {
     editorRef.value.destroy()
@@ -422,37 +410,54 @@ watch(visible, (val) => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .page-instruction-wrapper {
   display: inline-block;
 }
 
 .page-instruction-btn {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  border-radius: 4px 0 0 4px;
+  padding: 12px 8px;
+  writing-mode: vertical-rl;
+  letter-spacing: 2px;
   font-size: 14px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
 }
 
-:deep(.page-instruction-drawer) {
-  .el-drawer__header {
-    margin-bottom: 0;
-    padding: 16px 20px;
-    border-bottom: 1px solid #e4e7ed;
+.page-instruction-btn :deep(.el-icon) {
+  margin-bottom: 4px;
+  margin-right: 0;
+}
 
-    .el-drawer__title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #303133;
-    }
-  }
+:deep(.page-instruction-drawer) .el-overlay {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
 
-  .el-drawer__body {
-    padding: 0;
-    overflow: hidden;
-  }
+:deep(.page-instruction-drawer) .el-drawer__header {
+  margin-bottom: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e4e7ed;
+}
 
-  .el-drawer__footer {
-    padding: 16px 20px;
-    border-top: 1px solid #e4e7ed;
-  }
+:deep(.page-instruction-drawer) .el-drawer__header .el-drawer__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+}
+
+:deep(.page-instruction-drawer) .el-drawer__body {
+  padding: 0;
+  overflow: hidden;
+}
+
+:deep(.page-instruction-drawer) .el-drawer__footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e4e7ed;
 }
 
 .drawer-content {
@@ -482,87 +487,75 @@ watch(visible, (val) => {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+}
 
-  .page-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e4e7ed;
+.view-mode .page-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e4e7ed;
+}
 
-    .update-time {
-      font-size: 12px;
-      color: #909399;
-    }
+.view-mode .page-info .update-time {
+  font-size: 12px;
+  color: #909399;
+}
 
-    .rate-limit {
-      margin-left: auto;
-      font-size: 11px;
-    }
-  }
+.view-mode .page-info .rate-limit {
+  margin-left: auto;
+  font-size: 11px;
+}
 
-  .import-export-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    padding: 12px;
-    background: #f5f7fa;
-    border-radius: 4px;
+.view-mode .rich-content {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #303133;
+}
 
-    .inline-upload {
-      display: inline-block;
-    }
-  }
+.view-mode .rich-content :deep(h3) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+  margin: 20px 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #409eff;
+}
 
-  .rich-content {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #303133;
+.view-mode .rich-content :deep(p) {
+  margin: 12px 0;
+}
 
-    :deep(h3) {
-      font-size: 16px;
-      font-weight: 600;
-      color: #303133;
-      margin: 20px 0 12px 0;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #409eff;
-    }
+.view-mode .rich-content :deep(ul),
+.view-mode .rich-content :deep(ol) {
+  margin: 12px 0;
+  padding-left: 24px;
+}
 
-    :deep(p) {
-      margin: 12px 0;
-    }
+.view-mode .rich-content :deep(ul) li,
+.view-mode .rich-content :deep(ol) li {
+  margin: 8px 0;
+}
 
-    :deep(ul),
-    :deep(ol) {
-      margin: 12px 0;
-      padding-left: 24px;
+.view-mode .rich-content :deep(strong) {
+  font-weight: 600;
+  color: #409eff;
+}
 
-      li {
-        margin: 8px 0;
-      }
-    }
+.view-mode .rich-content :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 12px 0;
+}
 
-    :deep(strong) {
-      font-weight: 600;
-      color: #409eff;
-    }
-
-    :deep(img) {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-      margin: 12px 0;
-    }
-
-    :deep(blockquote) {
-      border-left: 4px solid #409eff;
-      padding: 8px 16px;
-      margin: 12px 0;
-      background: #f5f7fa;
-      color: #606266;
-    }
-  }
+.view-mode .rich-content :deep(blockquote) {
+  border-left: 4px solid #409eff;
+  padding: 8px 16px;
+  margin: 12px 0;
+  background: #f5f7fa;
+  color: #606266;
 }
 
 .edit-mode {
@@ -571,21 +564,57 @@ watch(visible, (val) => {
   flex-direction: column;
   padding: 16px;
   overflow: hidden;
+}
 
-  :deep(.w-e-text-container) {
-    background: #fff;
-  }
+.edit-mode :deep(.w-e-text-container) {
+  background: #fff;
 }
 
 .drawer-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
 
-  .footer-left,
-  .footer-right {
-    display: flex;
-    gap: 12px;
-  }
+.drawer-footer .footer-left,
+.drawer-footer .footer-right {
+  display: flex;
+  gap: 12px;
+}
+</style>
+
+<style>
+/* 页面说明抽屉样式 - 抽屉本身定位 */
+.page-instruction-modal .el-drawer.rtl {
+  top: 64px !important;
+  bottom: 120px !important;
+  height: auto !important;
+  max-height: calc(100vh - 184px) !important;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3);
+  z-index: 9999 !important;
+}
+
+/* 遮罩层调整 */
+.page-instruction-modal {
+  top: 64px !important;
+  bottom: 120px !important;
+  height: auto !important;
+  z-index: 9998 !important;
+}
+
+/* 备选选择器 - 最高优先级 */
+body .el-overlay.page-instruction-modal + .el-overlay-dialog .el-drawer.rtl,
+body .el-drawer__wrapper .page-instruction-drawer-wrapper,
+.el-overlay.page-instruction-modal .el-drawer {
+  top: 64px !important;
+  bottom: 120px !important;
+  height: auto !important;
+  z-index: 9999 !important;
+}
+
+/* 确保话务条和呼入信息栏在遮罩下 */
+.page-instruction-modal ~ * {
+  z-index: 1 !important;
 }
 </style>
