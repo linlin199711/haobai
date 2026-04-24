@@ -11,7 +11,6 @@ import type { NumberQueryItem, ReportQueryParams, QueryMethodOption } from '../t
  * 硬约束：固定包含2个选项：查询号码、主叫号码
  */
 export const queryMethodOptions: QueryMethodOption[] = [
-  { value: 'all', label: '全部' },
   { value: 'queryNumber', label: '查询号码' },
   { value: 'callerNumber', label: '主叫号码' }
 ]
@@ -125,24 +124,18 @@ export const fetchNumberQueryData = async (
   }
 
   // 查询方式筛选
-  if (params.queryMethod && params.queryMethod !== 'all') {
-    if (params.queryMethod === 'callerNumber' && params.inputNumber) {
+  if (params.queryMethod && params.inputNumber) {
+    if (params.queryMethod === 'callerNumber') {
       // 主叫号码匹配
       filteredData = filteredData.filter(item => {
         return item.callerNumber.includes(params.inputNumber!)
       })
-    } else if (params.queryMethod === 'queryNumber' && params.inputNumber) {
+    } else if (params.queryMethod === 'queryNumber') {
       // 播报号码匹配
       filteredData = filteredData.filter(item => {
         return item.playNumber.includes(params.inputNumber!)
       })
     }
-  } else if (params.inputNumber) {
-    // 全部查询方式，同时匹配主叫号码和播报号码
-    filteredData = filteredData.filter(item => {
-      return item.callerNumber.includes(params.inputNumber!) || 
-             item.playNumber.includes(params.inputNumber!)
-    })
   }
 
   return filteredData

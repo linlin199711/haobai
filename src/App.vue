@@ -118,6 +118,20 @@
             <div class="sub-menu-item" @click="handleOperationItem('organization')">
               <span>组织架构（复用）</span>
             </div>
+            <!-- 智能路由（二级菜单） -->
+            <div class="sub-menu-item" :class="{ active: showSmartRoutingMenu }" @click.stop="toggleSmartRoutingMenu">
+              <span>智能路由</span>
+              <el-icon class="arrow-icon" :class="{ 'is-expand': showSmartRoutingMenu }"><ArrowRight /></el-icon>
+            </div>
+            <!-- 智能路由二级子菜单 -->
+            <div v-if="showSmartRoutingMenu" class="sub-menu level-2" @click.stop>
+              <div class="sub-menu-item" :class="{ active: currentModule === 'skillManagement' }" @click="handleSmartRoutingItem('skillManagement')">
+                <span>技能管理</span>
+              </div>
+              <div class="sub-menu-item" :class="{ active: currentModule === 'routeManagement' }" @click="handleSmartRoutingItem('routeManagement')">
+                <span>路由管理</span>
+              </div>
+            </div>
           </div>
 
           <!-- 运营报表 -->
@@ -317,6 +331,54 @@
         <!-- AI 接话分流管理模块 -->
         <AiDiversionManage v-else-if="currentModule === 'aiDiversion'" />
 
+        <!-- 技能管理模块 -->
+        <div v-else-if="currentModule === 'skillManagement'" class="smart-routing-wrapper">
+          <el-card shadow="never" class="smart-routing-card">
+            <template #header>
+              <div class="card-header">
+                <el-icon><UserFilled /></el-icon>
+                <span>技能管理</span>
+              </div>
+            </template>
+            <div class="smart-routing-content">
+              <div class="reuse-content">
+                <div class="reuse-icon">
+                  <el-icon :size="100" color="#e0e0e0"><OfficeBuilding /></el-icon>
+                </div>
+                <div class="reuse-text">
+                  <p class="reuse-description">此页面为复用页面，具体功能待开发</p>
+                  <p class="reuse-system">技能管理功能复用万号能力</p>
+                  <p class="reuse-tip">如需使用请前往原系统进行操作</p>
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </div>
+
+        <!-- 路由管理模块 -->
+        <div v-else-if="currentModule === 'routeManagement'" class="smart-routing-wrapper">
+          <el-card shadow="never" class="smart-routing-card">
+            <template #header>
+              <div class="card-header">
+                <el-icon><Link /></el-icon>
+                <span>路由管理</span>
+              </div>
+            </template>
+            <div class="smart-routing-content">
+              <div class="reuse-content">
+                <div class="reuse-icon">
+                  <el-icon :size="100" color="#e0e0e0"><OfficeBuilding /></el-icon>
+                </div>
+                <div class="reuse-text">
+                  <p class="reuse-description">此页面为复用页面，具体功能待开发</p>
+                  <p class="reuse-system">路由管理功能复用万号能力</p>
+                  <p class="reuse-tip">如需使用请前往原系统进行操作</p>
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </div>
+
         <!-- 客户基本信息列表模块 -->
         <CustomerInfoList
           v-else-if="currentModule === 'customerInfoList'"
@@ -496,7 +558,7 @@ import {
   MoreFilled, Fold, Expand,
   QuestionFilled, ChatDotRound, Key, Management, InfoFilled, Collection, OfficeBuilding, DocumentChecked,
   Bell, Link, Connection, Check, Close, RefreshLeft, Cpu,
-  UserFilled, Grid, ArrowRight, TrendCharts
+  UserFilled, Grid, ArrowRight, TrendCharts, SwitchButton
 } from '@element-plus/icons-vue'
 import CallBar from './components/CallBar/CallBar.vue'
 
@@ -602,6 +664,9 @@ const showCustomerManageMenu = ref(false)
 // 销售品管理菜单显示状态
 const showProductManageMenu = ref(false)
 
+// 智能路由菜单显示状态
+const showSmartRoutingMenu = ref(false)
+
 // 弹窗显示状态
 const showDemo = ref(false)
 const showDocs = ref(false)
@@ -633,7 +698,8 @@ const supportedPageInstructions = [
   'customerInfoList', 'customerInfoDetail', 'customerAudit',
   'keywordManage', 'synonymKeywordManage', 'associateKeywordManage',
   'salesUnitManage', 'keywordAudit', 'salesUnitAudit',
-  'keywordSelect', 'nonNumberInfoManage', 'aiDiversion', 'organization'
+  'keywordSelect', 'nonNumberInfoManage', 'aiDiversion', 'organization',
+  'skillManagement', 'routeManagement'
 ]
 
 // 页面说明标题映射
@@ -664,7 +730,9 @@ const pageInstructionTitles: Record<string, string> = {
   dailyReport: '日报表',
   monthlyReport: '月报表',
   callStatistics: '话务统计',
-  businessAnalysis: '业务分析'
+  businessAnalysis: '业务分析',
+  skillManagement: '技能管理',
+  routeManagement: '路由管理'
 }
 
 // 是否显示页面说明按钮
@@ -750,6 +818,24 @@ const handleProductManageItem = (item: string) => {
   } else if (item === 'salesUnitAudit') {
     currentModule.value = 'salesUnitAudit'
     // 保持销售品管理菜单展开
+  }
+}
+
+// 切换智能路由菜单
+const toggleSmartRoutingMenu = () => {
+  showSmartRoutingMenu.value = !showSmartRoutingMenu.value
+  console.log('智能路由菜单状态:', showSmartRoutingMenu.value)
+}
+
+// 处理智能路由菜单项
+const handleSmartRoutingItem = (item: string) => {
+  console.log('点击智能路由菜单项:', item)
+  if (item === 'skillManagement') {
+    currentModule.value = 'skillManagement'
+    // 保持智能路由菜单展开
+  } else if (item === 'routeManagement') {
+    currentModule.value = 'routeManagement'
+    // 保持智能路由菜单展开
   }
 }
 
@@ -1338,6 +1424,77 @@ $sidebar-active: #00a8ff;
 
   .main-content {
     margin-left: 64px;
+  }
+}
+
+// 智能路由设置模块样式
+.smart-routing-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+
+  .smart-routing-card {
+    width: 100%;
+    max-width: 800px;
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .smart-routing-content {
+      padding: 40px 20px;
+      text-align: center;
+
+      p {
+        margin-top: 16px;
+        color: #909399;
+        font-size: 14px;
+      }
+
+      // 复用内容样式
+      .reuse-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+
+        .reuse-icon {
+          margin-bottom: 32px;
+        }
+
+        .reuse-text {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          align-items: center;
+
+          .reuse-description {
+            color: #909399;
+            font-size: 14px;
+            margin: 0;
+          }
+
+          .reuse-system {
+            color: #303133;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0;
+          }
+
+          .reuse-tip {
+            color: #909399;
+            font-size: 14px;
+            margin: 0;
+          }
+        }
+      }
+    }
   }
 }
 

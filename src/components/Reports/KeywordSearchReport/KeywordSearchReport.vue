@@ -26,6 +26,7 @@
         label-width="80px"
         class="filter-form"
       >
+        <!-- 第一行：4个选项卡 -->
         <el-row :gutter="20">
           <!-- 时间范围 -->
           <el-col :xs="24" :sm="12" :md="8" :lg="5">
@@ -92,7 +93,10 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
 
+        <!-- 第二行：1个选项卡 + 按钮区 -->
+        <el-row :gutter="20">
           <!-- 行业 -->
           <el-col :xs="24" :sm="12" :md="6" :lg="4">
             <el-form-item label="行业">
@@ -113,7 +117,7 @@
           </el-col>
 
           <!-- 按钮区 -->
-          <el-col :xs="24" :sm="24" :md="24" :lg="2">
+          <el-col :xs="24" :sm="24" :md="24" :lg="14">
             <el-form-item label-width="0" class="button-form-item">
               <div class="button-group">
                 <el-button type="primary" :loading="loading" @click="handleSearch">

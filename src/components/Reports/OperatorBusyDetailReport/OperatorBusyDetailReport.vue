@@ -3,92 +3,88 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <h2 class="page-title">操作员示忙详情</h2>
-      <!-- 页面说明按钮 -->
-      <div class="header-actions">
-        <el-button
-          type="default"
-          plain
-          @click="showPageInstruction = true"
-          class="page-instruction-btn"
-        >
-          <el-icon class="icon"><QuestionFilled /></el-icon>
-          页面说明
-        </el-button>
-      </div>
     </div>
 
     <!-- 筛选区卡片 -->
     <el-card class="filter-card" shadow="never">
-      <div class="filter-section">
-        <h3 class="filter-title">筛选条件</h3>
-        <el-form
-          ref="filterFormRef"
-          :model="filterForm"
-          label-position="right"
-          label-width="90px"
-          class="filter-form"
-          inline
-        >
-          <!-- 时间范围 -->
-          <el-form-item label="时间范围">
-            <el-date-picker
-              v-model="filterForm.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              style="width: 300px"
-            />
-          </el-form-item>
+      <template #header>
+        <div class="card-header">
+          <el-icon><Filter /></el-icon>
+          <span>筛选条件</span>
+        </div>
+      </template>
 
-          <!-- 话务查询方式 -->
-          <el-form-item label="话务查询方式">
-            <el-select
-              v-model="filterForm.callQueryMethod"
-              placeholder="请选择"
-              style="width: 120px"
-            >
-              <el-option
-                v-for="option in callQueryMethodOptions"
-                :key="option.value"
-                :label="option.label"
-                :value="option.value"
+      <el-form
+        ref="filterFormRef"
+        :model="filterForm"
+        label-width="90px"
+        class="filter-form"
+        @submit.prevent
+      >
+        <el-row :gutter="20">
+          <!-- 时间范围 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="8">
+            <el-form-item label="时间范围">
+              <el-date-picker
+                v-model="filterForm.dateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                style="width: 100%"
               />
-            </el-select>
-          </el-form-item>
+            </el-form-item>
+          </el-col>
+
+          <!-- 话务查询方 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="话务查询方">
+              <el-select v-model="filterForm.callQueryMethod" placeholder="请选择" style="width: 100%">
+                <el-option
+                  v-for="option in callQueryMethodOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
           <!-- 班组 -->
-          <el-form-item label="班组">
-            <el-select
-              v-model="filterForm.team"
-              placeholder="请选择"
-              style="width: 120px"
-            >
-              <el-option
-                v-for="team in teamList"
-                :key="team"
-                :label="team"
-                :value="team"
-              />
-            </el-select>
-          </el-form-item>
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="班组">
+              <el-select v-model="filterForm.team" placeholder="请选择" style="width: 100%">
+                <el-option
+                  v-for="team in teamList"
+                  :key="team"
+                  :label="team"
+                  :value="team"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-          <!-- 按钮区 -->
-          <el-form-item label-width="0" class="button-form-item">
-            <div class="button-group">
-              <el-button type="success" @click="handleExport">
-                数据导出
-              </el-button>
-              <el-button @click="handleReset">重置</el-button>
-              <el-button type="primary" :loading="loading" @click="handleSearch">
-                查询
-              </el-button>
-            </div>
-          </el-form-item>
-        </el-form>
-      </div>
+        <!-- 操作按钮 -->
+        <el-row :gutter="20" justify="end">
+          <el-col :span="24" class="filter-buttons">
+            <el-button @click="handleReset">
+              <el-icon><RefreshRight /></el-icon>
+              重置
+            </el-button>
+            <el-button type="primary" :loading="loading" @click="handleSearch">
+              <el-icon><Search /></el-icon>
+              查询
+            </el-button>
+            <el-button type="success" @click="handleExport">
+              <el-icon><Download /></el-icon>
+              导出数据
+            </el-button>
+          </el-col>
+        </el-row>
+      </el-form>
     </el-card>
 
     <!-- 数据列表区卡片 -->
@@ -147,7 +143,7 @@
         >
           <template #default="{ row }">
             <span v-if="row.busyEndTime">{{ row.busyEndTime }}</span>
-            <span v-else class="end-time-empty">-</span>
+            <span v-else class="end-time-empty">示忙未结束</span>
           </template>
         </el-table-column>
 
@@ -193,7 +189,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { QuestionFilled } from '@element-plus/icons-vue'
+import { QuestionFilled, Filter, RefreshRight, Search, Download } from '@element-plus/icons-vue'
 import { PageInstructionDrawer } from '../../PageInstruction'
 import * as XLSX from 'xlsx'
 import type { FilterForm, OperatorBusyItem, ReportQueryParams } from './types/operatorBusyDetailReport'
@@ -495,8 +491,13 @@ onMounted(() => {
 }
 
 .end-time-empty {
-  color: #909399;
-  font-style: italic;
+  color: #e6a23c;
+  font-weight: 500;
+  font-style: normal;
+  background-color: #fdf6ec;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #f5dab1;
 }
 
 // 分页

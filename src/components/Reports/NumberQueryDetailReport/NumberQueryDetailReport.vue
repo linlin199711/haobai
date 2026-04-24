@@ -3,81 +3,83 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <h2 class="page-title">号码查询明细</h2>
-      <!-- 页面说明按钮 -->
-      <div class="header-actions">
-        <el-button
-          type="default"
-          plain
-          @click="showPageInstruction = true"
-          class="page-instruction-btn"
-        >
-          <el-icon class="icon"><QuestionFilled /></el-icon>
-          页面说明
-        </el-button>
-      </div>
     </div>
 
     <!-- 筛选区卡片 -->
     <el-card class="filter-card" shadow="never">
+      <template #header>
+        <div class="card-header">
+          <el-icon><Filter /></el-icon>
+          <span>筛选条件</span>
+        </div>
+      </template>
+
       <el-form
         ref="filterFormRef"
         :model="filterForm"
-        label-position="right"
         label-width="90px"
         class="filter-form"
-        inline
+        @submit.prevent
       >
-        <!-- 时间范围 -->
-        <el-form-item label="时间范围">
-          <el-date-picker
-            v-model="filterForm.timeRange"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
-            format="YYYY-MM-DD HH:mm:ss"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            :default-time="['00:00:00', '23:59:59']"
-            style="width: 400px"
-          />
-        </el-form-item>
+        <el-row :gutter="20">
+          <!-- 时间范围 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="8">
+            <el-form-item label="时间范围">
+              <el-date-picker
+                v-model="filterForm.timeRange"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                format="YYYY-MM-DD HH:mm:ss"
+                value-format="YYYY-MM-DD HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
 
-        <!-- 查询方式 -->
-        <el-form-item label="查询方式">
-          <el-select
-            v-model="filterForm.queryMethod"
-            placeholder="请选择"
-            style="width: 120px"
-          >
-            <el-option
-              v-for="option in queryMethodOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-form-item>
+          <!-- 查询方式 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="查询方式">
+              <el-select v-model="filterForm.queryMethod" placeholder="请选择" style="width: 100%">
+                <el-option
+                  v-for="option in queryMethodOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-        <!-- 输入号码 -->
-        <el-form-item label="输入号码">
-          <el-input
-            v-model="filterForm.inputNumber"
-            placeholder="请输入号码"
-            clearable
-            style="width: 200px"
-            @keyup.enter="handleSearch"
-          />
-        </el-form-item>
+          <!-- 输入号码 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="输入号码">
+              <el-input
+                v-model="filterForm.inputNumber"
+                placeholder="请输入号码"
+                clearable
+                style="width: 100%"
+                @keyup.enter="handleSearch"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        <!-- 按钮区 -->
-        <el-form-item label-width="0" class="button-form-item">
-          <div class="button-group">
+        <!-- 操作按钮 -->
+        <el-row :gutter="20" justify="end">
+          <el-col :span="24" class="filter-buttons">
+            <el-button @click="handleReset">
+              <el-icon><RefreshRight /></el-icon>
+              重置
+            </el-button>
             <el-button type="primary" :loading="loading" @click="handleSearch">
+              <el-icon><Search /></el-icon>
               查询
             </el-button>
-            <el-button @click="handleReset">重置</el-button>
-          </div>
-        </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </el-card>
 
@@ -189,7 +191,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { QuestionFilled } from '@element-plus/icons-vue'
+import { QuestionFilled, Filter, RefreshRight, Search } from '@element-plus/icons-vue'
 import { PageInstructionDrawer } from '../../PageInstruction'
 import * as XLSX from 'xlsx'
 import type { FilterForm, NumberQueryItem, ReportQueryParams } from './types/numberQueryDetailReport'
@@ -207,7 +209,7 @@ const filterFormRef = ref<FormInstance>()
  */
 const filterForm = reactive<FilterForm>({
   timeRange: [],
-  queryMethod: 'all',
+  queryMethod: 'queryNumber',
   inputNumber: ''
 })
 
@@ -272,7 +274,7 @@ const handleSearch = () => {
  */
 const handleReset = () => {
   filterForm.timeRange = []
-  filterForm.queryMethod = 'all'
+  filterForm.queryMethod = 'queryNumber'
   filterForm.inputNumber = ''
   currentPage.value = 1
   pageSize.value = 10

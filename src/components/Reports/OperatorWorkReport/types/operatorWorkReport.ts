@@ -14,7 +14,7 @@ export type CombinationMode = 'day' | 'week' | 'month'
 export type CallType = 'all' | 'inbound' | 'outbound' | 'transfer'
 
 /** 话务查询方 */
-export type CallQueryParty = 'all' | 'manual' | 'auto'
+export type CallQueryParty = 'team'
 
 /** 是否实时选项 */
 export interface IsRealTimeOption {
@@ -48,14 +48,10 @@ export interface FilterForm {
   dateRange: string[]
   /** 组合方式 */
   combinationMode: CombinationMode
-  /** 话务类型 */
-  callType: CallType
-  /** 地市 */
-  city: string
-  /** 班组 */
-  team: string
   /** 话务查询方 */
   callQueryParty: CallQueryParty
+  /** 班组 */
+  team: string
 }
 
 /** 操作员工作情况数据项 */
@@ -154,12 +150,8 @@ export interface ReportQueryParams {
   endDate?: string
   /** 组合方式 */
   combinationMode?: CombinationMode
-  /** 话务类型 */
-  callType?: CallType
-  /** 地市 */
-  city?: string
-  /** 班组 */
-  team?: string
   /** 话务查询方 */
   callQueryParty?: CallQueryParty
+  /** 班组 */
+  team?: string
 }

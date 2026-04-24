@@ -2,7 +2,11 @@
   <div class="operator-work-report">
     <!-- 页面标题 -->
     <div class="page-header">
-      <h2 class="page-title">操作员工作情况</h2>
+      <div class="header-left">
+        <h2 class="page-title">操作员工作情况</h2>
+        <p class="page-note">支持数据导出功能</p>
+      </div>
+      <!-- 页面说明按钮 -->
       <div class="header-actions">
         <el-button
           type="default"
@@ -13,142 +17,111 @@
           <el-icon class="icon"><QuestionFilled /></el-icon>
           页面说明
         </el-button>
-        <el-button type="success" @click="handleExport">
-          <el-icon><Download /></el-icon>
-          导出Excel
-        </el-button>
       </div>
     </div>
 
     <!-- 筛选区卡片 -->
     <el-card class="filter-card" shadow="never">
+      <template #header>
+        <div class="card-header">
+          <el-icon><Filter /></el-icon>
+          <span>筛选条件</span>
+        </div>
+      </template>
+
       <el-form
         ref="filterFormRef"
         :model="filterForm"
-        label-position="right"
         label-width="90px"
         class="filter-form"
-        inline
+        @submit.prevent
       >
-        <!-- 是否实时 -->
-        <el-form-item label="是否实时">
-          <el-select
-            v-model="filterForm.isRealTime"
-            placeholder="请选择"
-            style="width: 100px"
-          >
-            <el-option
-              v-for="option in isRealTimeOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-form-item>
+        <el-row :gutter="20">
+          <!-- 是否实时 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="4">
+            <el-form-item label="是否实时">
+              <el-select v-model="filterForm.isRealTime" placeholder="请选择" style="width: 100%">
+                <el-option
+                  v-for="option in isRealTimeOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-        <!-- 时间范围 -->
-        <el-form-item label="时间范围">
-          <el-date-picker
-            v-model="filterForm.dateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-            style="width: 300px"
-          />
-        </el-form-item>
+          <!-- 组合方式 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="4">
+            <el-form-item label="组合方式">
+              <el-select v-model="filterForm.combinationMode" placeholder="请选择" style="width: 100%">
+                <el-option
+                  v-for="option in combinationModeOptions"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-        <!-- 组合方式 -->
-        <el-form-item label="组合方式">
-          <el-select
-            v-model="filterForm.combinationMode"
-            placeholder="请选择"
-            style="width: 100px"
-          >
-            <el-option
-              v-for="option in combinationModeOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-form-item>
+          <!-- 话务查询方 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="4">
+            <el-form-item label="话务查询方">
+              <el-select v-model="filterForm.callQueryParty" placeholder="请选择" style="width: 100%">
+                <el-option value="team" label="按班组" />
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-        <!-- 话务类型 -->
-        <el-form-item label="话务类型">
-          <el-select
-            v-model="filterForm.callType"
-            placeholder="请选择"
-            style="width: 100px"
-          >
-            <el-option
-              v-for="option in callTypeOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-form-item>
+          <!-- 时间范围 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="时间范围">
+              <el-date-picker
+                v-model="filterForm.dateRange"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                style="width: 100%"
+              />
+            </el-form-item>
+          </el-col>
 
-        <!-- 地市 -->
-        <el-form-item label="地市">
-          <el-select
-            v-model="filterForm.city"
-            placeholder="请选择地市"
-            style="width: 120px"
-          >
-            <el-option
-              v-for="city in cityList"
-              :key="city"
-              :label="city"
-              :value="city"
-            />
-          </el-select>
-        </el-form-item>
+          <!-- 班组 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="班组">
+              <el-select v-model="filterForm.team" placeholder="请选择班组" style="width: 100%">
+                <el-option
+                  v-for="team in teamList"
+                  :key="team"
+                  :label="team"
+                  :value="team"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-        <!-- 班组 -->
-        <el-form-item label="班组">
-          <el-select
-            v-model="filterForm.team"
-            placeholder="请选择班组"
-            style="width: 120px"
-          >
-            <el-option
-              v-for="team in teamList"
-              :key="team"
-              :label="team"
-              :value="team"
-            />
-          </el-select>
-        </el-form-item>
-
-        <!-- 话务查询方 -->
-        <el-form-item label="话务查询方">
-          <el-select
-            v-model="filterForm.callQueryParty"
-            placeholder="请选择"
-            style="width: 120px"
-          >
-            <el-option
-              v-for="option in callQueryPartyOptions"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-        </el-form-item>
-
-        <!-- 按钮区 -->
-        <el-form-item label-width="0" class="button-form-item">
-          <div class="button-group">
+        <!-- 操作按钮 -->
+        <el-row :gutter="20" justify="end">
+          <el-col :span="24" class="filter-buttons">
+            <el-button @click="handleReset">
+              <el-icon><RefreshRight /></el-icon>
+              重置
+            </el-button>
             <el-button type="primary" :loading="loading" @click="handleSearch">
+              <el-icon><Search /></el-icon>
               查询
             </el-button>
-            <el-button @click="handleReset">重置</el-button>
-          </div>
-        </el-form-item>
+            <el-button type="success" @click="handleExport">
+              <el-icon><Download /></el-icon>
+              导出数据
+            </el-button>
+          </el-col>
+        </el-row>
       </el-form>
     </el-card>
 
@@ -373,29 +346,27 @@
       </el-table>
     </el-card>
 
-    <!-- 页面说明抽屉 -->
-    <PageInstructionDrawer
-      v-model="showPageInstruction"
-      :page-id="'operator-work-report'"
-      :page-title="'操作员工作情况'"
-    />
   </div>
+
+  <!-- 页面说明抽屉 -->
+  <PageInstructionDrawer
+    v-model="showPageInstruction"
+    :page-id="'operator-work-report'"
+    :page-title="'操作员工作情况'"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { Download, QuestionFilled } from '@element-plus/icons-vue'
+import { Download, Filter, RefreshRight, Search, QuestionFilled } from '@element-plus/icons-vue'
 import { PageInstructionDrawer } from '../../PageInstruction'
 import * as XLSX from 'xlsx'
 import type { FilterForm, OperatorWorkItem, ReportQueryParams, SummaryRow } from './types/operatorWorkReport'
 import { 
   isRealTimeOptions, 
   combinationModeOptions, 
-  callTypeOptions, 
-  callQueryPartyOptions, 
-  cityList, 
   teamList, 
   fetchOperatorWorkData, 
   calculateSummaryRow 
@@ -406,16 +377,14 @@ const filterFormRef = ref<FormInstance>()
 
 /**
  * 筛选表单数据
- * 布局约束：是否实时、时间范围、组合方式、话务类型、地市、班组、话务查询方 顺序严格对齐原型
+ * 布局约束：是否实时、时间范围、组合方式、话务查询方、班组 顺序严格对齐原型
  */
 const filterForm = reactive<FilterForm>({
   isRealTime: 'no',
   dateRange: [],
   combinationMode: 'day',
-  callType: 'all',
-  city: '全部地市',
-  team: '全部班组',
-  callQueryParty: 'all'
+  callQueryParty: 'team',
+  team: '全部班组'
 })
 
 // ==================== 数据加载 ====================
@@ -426,6 +395,13 @@ const emptyText = ref('暂无操作员工作情况统计数据')
 
 // 页面说明抽屉
 const showPageInstruction = ref(false)
+
+
+
+
+
+
+
 
 /**
  * 加载数据
@@ -440,8 +416,6 @@ const loadData = async () => {
       startDate: filterForm.dateRange?.[0],
       endDate: filterForm.dateRange?.[1],
       combinationMode: filterForm.combinationMode,
-      callType: filterForm.callType,
-      city: filterForm.city,
       team: filterForm.team,
       callQueryParty: filterForm.callQueryParty
     }
@@ -501,10 +475,8 @@ const handleReset = () => {
   filterForm.isRealTime = 'no'
   filterForm.dateRange = []
   filterForm.combinationMode = 'day'
-  filterForm.callType = 'all'
-  filterForm.city = '全部地市'
+  filterForm.callQueryParty = 'team'
   filterForm.team = '全部班组'
-  filterForm.callQueryParty = 'all'
 
   // 重新加载数据
   loadData()
@@ -623,17 +595,30 @@ onMounted(() => {
   min-height: calc(100vh - 120px);
 }
 
-// 页面标题
+// 页面头部
 .page-header {
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
   .page-title {
     font-size: 20px;
     font-weight: 600;
     color: #303133;
+    margin: 0;
+    padding: 0;
+  }
+
+  .page-note {
+    font-size: 14px;
+    color: #909399;
     margin: 0;
     padding: 0;
   }
@@ -644,35 +629,76 @@ onMounted(() => {
   }
 }
 
-// 筛选区卡片
+// 筛选区卡片 - 现代化卡片设计
 .filter-card {
   margin-bottom: 20px;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 
   :deep(.el-card__body) {
-    padding: 20px;
+    padding: 24px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #1f2937;
+
+    .el-icon {
+      font-size: 16px;
+      color: #409eff;
+    }
   }
 }
 
 // 筛选表单
 .filter-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-
   .el-form-item {
     margin-bottom: 0;
-    margin-right: 0;
   }
 
-  .button-form-item {
-    margin-left: auto;
+  .el-form-item__label {
+    font-weight: 500;
+    color: #6b7280;
+    font-size: 13px;
   }
 
-  .button-group {
+  .filter-buttons {
     display: flex;
-    gap: 8px;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+  }
+}
+
+// 输入框样式优化
+:deep(.el-input__wrapper),
+:deep(.el-select .el-input__wrapper) {
+  box-shadow: 0 0 0 1px #dcdfe6 inset;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 0 0 1px #409eff inset;
+  }
+
+  &.is-focus {
+    box-shadow: 0 0 0 1px #409eff inset;
+  }
+}
+
+// 日期选择器样式
+:deep(.el-date-editor) {
+  .el-input__wrapper {
+    padding: 0 12px;
   }
 }
 
