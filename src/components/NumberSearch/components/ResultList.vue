@@ -127,7 +127,7 @@
               >
                 优推
               </el-button>
-              <!-- 品牌 -->
+              <!-- 广告 -->
               <el-button
                 v-if="hasService(row, 'brand')"
                 type="primary"
@@ -135,7 +135,7 @@
                 size="small"
                 @click.stop="handleBrand(row)"
               >
-                品牌
+                广告
               </el-button>
               <!-- 实名 -->
               <el-button

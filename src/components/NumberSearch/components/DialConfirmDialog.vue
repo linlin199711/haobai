@@ -14,7 +14,7 @@
   >
     <div v-if="customer" class="dial-confirm-content">
       <el-alert
-        title="确认拍号后将向客户语音播报号码信息"
+        title="确认拍号后将向客户语音播报、短信下发号码信息"
         type="warning"
         :closable="false"
         show-icon
@@ -31,7 +31,8 @@
         <p>拍号后系统将：</p>
         <ul>
           <li>1. 向客户语音播报号码信息</li>
-          <li>2. 记录拍号操作日志</li>
+          <li>2. 向客户短信下发号码信息</li>
+          <li>3. 记录拍号操作日志</li>
         </ul>
       </div>
     </div>

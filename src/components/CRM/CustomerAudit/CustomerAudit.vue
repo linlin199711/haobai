@@ -35,6 +35,19 @@
             </el-form-item>
           </el-col>
 
+          <!-- 平台客户编号 -->
+          <el-col :xs="24" :sm="12" :md="8" :lg="6">
+            <el-form-item label="平台客户编号">
+              <el-input
+                v-model="queryForm.platformCustomerId"
+                placeholder="请输入平台客户编号"
+                clearable
+                maxlength="50"
+                @keyup.enter="handleSearch"
+              />
+            </el-form-item>
+          </el-col>
+
           <!-- 电话号码 -->
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="电话号码">
@@ -177,6 +190,14 @@
           prop="customerName"
           label="客户名称"
           min-width="180"
+          show-overflow-tooltip
+        />
+
+        <!-- 平台客户编号 -->
+        <el-table-column
+          prop="platformCustomerId"
+          label="平台客户编号"
+          min-width="150"
           show-overflow-tooltip
         />
 
@@ -345,6 +366,7 @@ const filterFormRef = ref()
 // 查询表单
 const queryForm = reactive({
   customerName: '',
+  platformCustomerId: '',
   phone: '',
   dateRange: null,
   industry: '',
@@ -391,6 +413,7 @@ const loadCustomerList = async () => {
   try {
     const params: CustomerAuditQueryParams = {
       customerName: queryForm.customerName || undefined,
+      platformCustomerId: queryForm.platformCustomerId || undefined,
       phone: queryForm.phone || undefined,
       region: queryForm.region || undefined,
       industry: queryForm.industry || undefined,
@@ -430,6 +453,7 @@ const handleSearch = () => {
  */
 const handleReset = () => {
   queryForm.customerName = ''
+  queryForm.platformCustomerId = ''
   queryForm.phone = ''
   queryForm.dateRange = null
   queryForm.industry = ''

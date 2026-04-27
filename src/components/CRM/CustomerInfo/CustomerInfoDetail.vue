@@ -299,14 +299,26 @@
       <el-table :data="formData.businessList" border stripe style="width: 100%">
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column prop="productName" label="业务名称" min-width="180" show-overflow-tooltip />
+        <el-table-column label="业务号码" min-width="150" align="center">
+          <template #default="{ row }">
+            <div v-if="row.formData">
+              <div v-for="(value, key) in row.formData" :key="key" v-if="key.includes('transferNumber') && value">
+                {{ value }}
+              </div>
+              <div v-else>-</div>
+            </div>
+            <div v-else>-</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="业务状态" width="100" align="center">
           <template #default="{ row }">
             <el-tag :type="getBusinessStatusType(row.status)">{{ getStatusLabel(row.status) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150" align="center" fixed="right">
+        <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="handleViewBusiness(row)">查看</el-button>
+            <el-button link type="warning" @click="handleEditBusiness(row)">编辑</el-button>
             <el-button link type="danger" @click="handleCancelBusiness(row)">注销</el-button>
           </template>
         </el-table-column>
@@ -318,7 +330,7 @@
     <!-- 业务详情弹窗 -->
     <el-dialog
       v-model="businessDialogVisible"
-      title="业务详情"
+      :title="businessDialogTitle"
       width="700px"
       :close-on-click-modal="false"
       destroy-on-close
@@ -336,11 +348,20 @@
       </div>
 
       <!-- 业务信息 -->
-      <div class="business-info-section" v-if="selectedBusiness">
+        <div class="business-info-section" v-if="selectedBusiness">
         <h4>业务信息</h4>
         <div class="order-basic-info">
           <p><strong>业务编号：</strong>{{ selectedBusiness.id }}</p>
           <p><strong>业务名称：</strong>{{ selectedBusiness.productName }}</p>
+          <p><strong>业务号码：</strong>
+            <span v-if="selectedBusiness.formData">
+              <span v-for="(value, key) in selectedBusiness.formData" :key="key" v-if="key.includes('transferNumber') && value">
+                {{ value }}<br>
+              </span>
+              <span v-else>-</span>
+            </span>
+            <span v-else>-</span>
+          </p>
           <p><strong>提交时间：</strong>{{ selectedBusiness.submitTime }}</p>
           <p><strong>提交人：</strong>{{ selectedBusiness.submitter }}</p>
         </div>
@@ -348,14 +369,30 @@
         <!-- 业务表单数据 -->
         <div class="form-data-section" v-if="selectedBusiness.formData && Object.keys(selectedBusiness.formData).length > 0">
           <h5>业务配置</h5>
-          <div class="form-data-grid">
+          <div class="form-data-grid" v-if="!isEditMode">
             <div v-for="(value, key) in selectedBusiness.formData" :key="key" class="form-data-item">
               <span class="form-data-label">{{ formatFormFieldLabel(key) }}：</span>
               <span class="form-data-value">{{ formatFormFieldValue(value) }}</span>
             </div>
           </div>
+          <!-- 编辑表单 -->
+          <el-form v-else ref="editFormRef" :model="editFormData" label-width="120px" class="edit-form">
+            <el-row :gutter="20">
+              <el-col :xs="24" :md="12" v-for="(value, key) in selectedBusiness.formData" :key="key">
+                <el-form-item :label="formatFormFieldLabel(key)">
+                  <el-input v-model="editFormData[key]" placeholder="请输入" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
         </div>
       </div>
+
+      <!-- 弹窗底部按钮 -->
+      <template #footer>
+        <el-button @click="businessDialogVisible = false">取消</el-button>
+        <el-button v-if="isEditMode" type="primary" @click="handleSaveBusinessEdit">保存</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -401,6 +438,10 @@ const loading = ref(false)
 const formRef = ref()
 const businessDialogVisible = ref(false)
 const selectedBusiness = ref<CustomerBusiness | null>(null)
+const businessDialogTitle = ref('业务详情')
+const isEditMode = ref(false)
+const editFormRef = ref()
+const editFormData = reactive({})
 
 // ==================== 表单数据 ====================
 
@@ -514,6 +555,8 @@ const formatFormFieldValue = (value: any): string => {
 
 const handleViewBusiness = (row: CustomerBusiness) => {
   selectedBusiness.value = row
+  businessDialogTitle.value = '业务详情'
+  isEditMode.value = false
   businessDialogVisible.value = true
 }
 
@@ -530,6 +573,26 @@ const handleCancelBusiness = (row: CustomerBusiness) => {
     row.status = '已注销' as any
     ElMessage.success('业务已注销')
   }).catch(() => {})
+}
+
+const handleEditBusiness = (row: CustomerBusiness) => {
+  selectedBusiness.value = row
+  businessDialogTitle.value = '编辑业务'
+  isEditMode.value = true
+  // 复制业务数据到编辑表单
+  Object.assign(editFormData, row.formData)
+  businessDialogVisible.value = true
+}
+
+const handleSaveBusinessEdit = () => {
+  if (selectedBusiness.value) {
+    // 更新业务数据
+    selectedBusiness.value.formData = { ...editFormData }
+    ElMessage.success('业务信息已更新')
+    businessDialogVisible.value = false
+    // 重置编辑模式
+    isEditMode.value = false
+  }
 }
 
 // ==================== 加载数据 ====================
@@ -800,6 +863,18 @@ onMounted(async () => {
       color: #303133;
       word-break: break-all;
     }
+  }
+}
+
+.edit-form {
+  margin-top: 10px;
+  
+  .el-form-item {
+    margin-bottom: 15px;
+  }
+  
+  .el-input {
+    width: 100%;
   }
 }
 </style>

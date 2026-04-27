@@ -502,8 +502,8 @@ const confirmTransfer = async () => {
 
 // ==================== 短信 ====================
 const handleSms = (row: CustomerInfo) => {
-  currentCustomer.value = row
-  showSmsDialog.value = true
+  // 不再打开短信发送弹窗
+  ElMessage.info('短信功能已禁用')
 }
 
 const confirmSms = async (content: string) => {

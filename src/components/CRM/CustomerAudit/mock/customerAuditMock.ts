@@ -289,8 +289,12 @@ const aggregateCustomerBusiness = (): CustomerBusinessAggregate[] => {
     // 确定锁定状态
     const hasLocked = customerOrders.some(o => o.lockStatus === LockStatusEnum.LOCKED)
 
+    // 生成平台客户编号（参考客户基础信息默认生成）
+    const platformCustomerId = `PC${customer.id.replace('C', '')}`
+
     aggregateMap.set(customer.id, {
       customerId: customer.id,
+      platformCustomerId: platformCustomerId,
       customerName: customer.name,
       phone: customer.phone,
       region: customer.region,

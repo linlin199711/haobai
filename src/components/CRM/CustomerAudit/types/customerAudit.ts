@@ -127,6 +127,7 @@ export interface BusinessOrder {
 // 客户业务聚合数据（列表展示用）
 export interface CustomerBusinessAggregate {
   customerId: string
+  platformCustomerId: string        // 平台客户编号
   customerName: string
   phone: string
   region: string
@@ -144,6 +145,7 @@ export interface CustomerBusinessAggregate {
 // 查询参数
 export interface CustomerAuditQueryParams {
   customerName?: string
+  platformCustomerId?: string        // 平台客户编号
   phone?: string
   region?: string
   industry?: string

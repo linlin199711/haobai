@@ -118,53 +118,92 @@
                 </template>
               </el-table-column>
 
-              <!-- 销售单元名称 -->
+              <!-- ID -->
               <el-table-column
-                prop="keyword"
-                label="销售单元名称"
-                min-width="150"
-                show-overflow-tooltip
-              />
-
-              <!-- 所属地区 -->
-              <el-table-column
-                prop="regionName"
-                label="所属地区"
-                width="100"
+                prop="id"
+                label="ID"
+                width="80"
                 align="center"
               />
 
-              <!-- 所属行业 -->
+              <!-- 区域 -->
+              <el-table-column
+                label="区域"
+                min-width="150"
+                align="center"
+              >
+                <template #default="{ row }">
+                  {{ row.regionName }}{{ row.districtName ? ' ' + row.districtName : '' }}
+                </template>
+              </el-table-column>
+
+              <!-- 所属商圈 -->
+              <el-table-column
+                label="所属商圈"
+                width="100"
+                align="center"
+              >
+                <template #default="{ row }">
+                  - <!-- 占位符 -->
+                </template>
+              </el-table-column>
+
+              <!-- 行业 -->
               <el-table-column
                 prop="industryName"
-                label="所属行业"
+                label="行业"
                 width="100"
                 align="center"
               />
 
-              <!-- 关键字 -->
+              <!-- 关键词 -->
               <el-table-column
                 prop="keyword"
-                label="关键字"
+                label="关键词"
                 min-width="120"
                 show-overflow-tooltip
               />
 
-              <!-- 排序模式 -->
+              <!-- 开始时段 -->
               <el-table-column
-                prop="sortMode"
-                label="排序模式"
+                label="开始时段"
+                width="100"
+                align="center"
+              >
+                <template #default="{ row }">
+                  - <!-- 占位符 -->
+                </template>
+              </el-table-column>
+
+              <!-- 结束时段 -->
+              <el-table-column
+                label="结束时段"
+                width="100"
+                align="center"
+              >
+                <template #default="{ row }">
+                  - <!-- 占位符 -->
+                </template>
+              </el-table-column>
+
+              <!-- 最大销售数 -->
+              <el-table-column
+                prop="maxSalesCount"
+                label="最大销售数"
                 width="100"
                 align="center"
               />
 
-              <!-- 最大销售数量 -->
+              <!-- 实际销售数 -->
               <el-table-column
-                prop="maxSalesCount"
-                label="最大数量"
-                width="90"
+                label="实际销售数"
+                width="100"
                 align="center"
-              />
+              >
+                <template #default="{ row }">
+                  - <!-- 占位符 -->
+                </template>
+              </el-table-column>
 
               <!-- 建议售价 -->
               <el-table-column
@@ -177,6 +216,14 @@
                   ¥{{ row.suggestedPrice }}
                 </template>
               </el-table-column>
+
+              <!-- 排序模式 -->
+              <el-table-column
+                prop="sortMode"
+                label="排序模式"
+                width="100"
+                align="center"
+              />
             </el-table>
 
             <!-- 空状态 -->

@@ -168,10 +168,17 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="notificationStatus" label="通知情况" width="90" align="center">
+        <el-table-column prop="voiceNotificationResult" label="语音通知结果" width="120" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.notificationStatus === 'notified' ? 'success' : 'info'">
-              {{ row.notificationStatus === 'notified' ? '已通知' : '未通知' }}
+            <el-tag :type="row.voiceNotificationResult === 'success' ? 'success' : row.voiceNotificationResult === 'failed' ? 'danger' : 'info'">
+              {{ row.voiceNotificationResult === 'success' ? '成功' : row.voiceNotificationResult === 'failed' ? '失败' : '未通知' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="smsNotificationResult" label="短信通知结果" width="120" align="center">
+          <template #default="{ row }">
+            <el-tag :type="row.smsNotificationResult === 'success' ? 'success' : row.smsNotificationResult === 'failed' ? 'danger' : 'info'">
+              {{ row.smsNotificationResult === 'success' ? '成功' : row.smsNotificationResult === 'failed' ? '失败' : '未通知' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -319,6 +326,8 @@ const generateMockData = () => {
       carColor: ['白色', '黑色', '银色', '红色', '蓝色'][Math.floor(Math.random() * 5)],
       carBrand: ['丰田', '本田', '大众', '宝马', '奔驰'][Math.floor(Math.random() * 5)],
       syncStatus: ['synced', 'unsynced', 'syncing'][Math.floor(Math.random() * 3)],
+      voiceNotificationResult: ['success', 'failed', 'pending'][Math.floor(Math.random() * 3)],
+      smsNotificationResult: ['success', 'failed', 'pending'][Math.floor(Math.random() * 3)],
       notificationStatus: Math.random() > 0.3 ? 'notified' : 'unnotified',
       agentId: `A${String(Math.floor(Math.random() * 100)).padStart(3, '0')}`,
       smsPhoneNumber: `138${String(i).padStart(4, '0')}8000`,
