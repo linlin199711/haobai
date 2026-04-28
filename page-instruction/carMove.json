@@ -1,6 +1,6 @@
 {
   "pageId": "carMove",
   "pageTitle": "挪车登记",
-  "content": "<h3>【挪车登记 - 页面说明】</h3><p><strong>一、功能概述</strong></p><p>挪车登记功能，目前作为表单数据收集，需按照地市维度开放。（）</p><p><strong>二、主要功能</strong></p><ul><li>登记挪车请求信息</li><li>系统自动通知车主</li><li>记录挪车历史</li><li>支持批量处理</li></ul>",
-  "updateTime": "2026-04-27T03:04:32.835Z"
+  "content": "<h3>【挪车登记 - 页面说明】</h3><p><strong>一、功能概述</strong></p><p>挪车登记功能，目前作为表单数据收集，需按照地市维度开放。（）</p><p><strong>二、页面说明</strong></p><ul><li>登记挪车请求信息</li><li>系统自动通知车主</li><li>记录挪车历史</li><li>支持批量处理</li></ul><p><strong>三、操作说明</strong></p><ul><li>登记挪车请求信息</li><li>系统自动通知车主</li><li>记录挪车历史</li><li>支持批量处理</li></ul>",
+  "updateTime": "2026-04-28T01:34:47.700Z"
 }
