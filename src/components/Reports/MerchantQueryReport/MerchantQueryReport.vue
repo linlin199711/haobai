@@ -227,12 +227,7 @@
           </template>
         </el-table-column>
 
-        <!-- 模糊查询次数 -->
-        <el-table-column prop="fuzzyQueryCount" label="模糊查询次数" width="120" align="center">
-          <template #default="{ row }">
-            {{ formatNumber(row.fuzzyQueryCount) }}
-          </template>
-        </el-table-column>
+
 
         <!-- 转接次数 -->
         <el-table-column prop="transferCount" label="转接次数" width="90" align="center" />
