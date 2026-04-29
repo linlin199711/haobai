@@ -309,17 +309,6 @@
       <el-table :data="formData.businessList" border stripe style="width: 100%">
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column prop="productName" label="业务名称" min-width="180" show-overflow-tooltip />
-        <el-table-column label="业务号码" min-width="150" align="center">
-          <template #default="{ row }">
-            <div v-if="row.formData">
-              <div v-for="(value, key) in row.formData" :key="key" v-if="key.includes('transferNumber') && value">
-                {{ value }}
-              </div>
-              <div v-else>-</div>
-            </div>
-            <div v-else>-</div>
-          </template>
-        </el-table-column>
         <el-table-column prop="status" label="业务状态" width="100" align="center">
           <template #default="{ row }">
             <el-tag :type="getBusinessStatusType(row.status)">{{ getStatusLabel(row.status) }}</el-tag>
@@ -408,12 +397,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useCustomerInfoStore } from './store/customerInfoStore'
 import type { CustomerBusiness } from './types/customerInfo'
 import { AuditStatusEnum, AuditStatusLabels } from '../CustomerAudit/types/customerAudit'
-import { ProductTypeNames } from '../CustomerAudit/types/customerAudit'
+import { ProductTypeNames, ProductTypeEnum } from '../CustomerAudit/types/customerAudit'
 
 // ==================== Props 和 Emits ====================
 
@@ -622,8 +611,8 @@ const loadData = () => {
     formData.businessList = [
       {
         id: 'O' + id + '_001',
-        productType: 'query_transfer',
-        productName: ProductTypeNames['query_transfer'],
+        productType: ProductTypeEnum.QUERY_TRANSFER,
+        productName: ProductTypeNames[ProductTypeEnum.QUERY_TRANSFER],
         status: AuditStatusEnum.APPROVED,
         submitTime: '2024-01-15 10:30:00',
         submitter: '张三',
@@ -638,8 +627,8 @@ const loadData = () => {
       },
       {
         id: 'O' + id + '_002',
-        productType: 'sms_card',
-        productName: ProductTypeNames['sms_card'],
+        productType: ProductTypeEnum.SMS_CARD,
+        productName: ProductTypeNames[ProductTypeEnum.SMS_CARD],
         status: AuditStatusEnum.APPROVED,
         submitTime: '2024-01-15 11:00:00',
         submitter: '张三',
@@ -650,8 +639,8 @@ const loadData = () => {
       },
       {
         id: 'O' + id + '_003',
-        productType: 'real_name_query',
-        productName: ProductTypeNames['real_name_query'],
+        productType: ProductTypeEnum.REAL_NAME_QUERY,
+        productName: ProductTypeNames[ProductTypeEnum.REAL_NAME_QUERY],
         status: AuditStatusEnum.PENDING,
         submitTime: '2024-01-16 09:15:00',
         submitter: '李四',
@@ -677,6 +666,12 @@ const loadData = () => {
 }
 
 // ==================== 生命周期 ====================
+
+watch(() => props.customerId, (newId) => {
+  if (newId) {
+    loadData()
+  }
+}, { immediate: true })
 
 onMounted(async () => {
   loading.value = true

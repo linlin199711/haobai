@@ -7,6 +7,7 @@
     <MigrationFilterForm @search="handleSearch" />
 
     <MigrationCustomerList
+      ref="sourceListRef"
       title="源客户列表"
       :customers="sourceCustomers"
       :loading="loading"
@@ -14,6 +15,7 @@
     />
 
     <MigrationCustomerList
+      ref="targetListRef"
       title="目标客户列表"
       :customers="targetCustomers"
       :loading="loading"
@@ -117,6 +119,8 @@ const pendingMode = ref<MigrationMode>('business')
 
 const selectedSource = ref<CustomerInfo | null>(null)
 const selectedTarget = ref<CustomerInfo | null>(null)
+const sourceListRef = ref()
+const targetListRef = ref()
 
 const sourceCustomers = ref<CustomerInfo[]>([...mockSourceCustomers])
 const targetCustomers = ref<CustomerInfo[]>([...mockTargetCustomers])
@@ -153,6 +157,8 @@ const handleSearch = (form: FilterForm) => {
     
     selectedSource.value = null
     selectedTarget.value = null
+    sourceListRef.value?.setSelected(null)
+    targetListRef.value?.setSelected(null)
     loading.value = false
   }, 500)
 }

@@ -1,18 +1,36 @@
 <template>
-  <el-card :title="title" shadow="never" class="customer-list-card">
+  <el-card shadow="never" class="customer-list-card">
+    <template #header>
+      <div class="card-header">
+        <span class="card-title">{{ title }}</span>
+        <el-tag :type="tagType" class="customer-tag">
+          {{ tagText }}
+        </el-tag>
+      </div>
+    </template>
     <el-table
       v-loading="loading"
       :data="customers"
       :row-key="'id'"
       :header-cell-style="{ background: '#fafafa' }"
+      highlight-current-row
+      @row-click="handleRowClick"
       class="customer-table"
     >
       <el-table-column
-        type="selection"
-        :selectable="row => !disabled"
-        @selection-change="handleSelectionChange"
         width="55"
-      />
+        align="center"
+      >
+        <template #default="{ row }">
+          <el-radio
+            v-model="selectedId"
+            :label="row.id"
+            :disabled="disabled"
+            @click.stop
+          >
+          </el-radio>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="customerId"
         label="客户ID"
@@ -114,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue'
+import { ref, h, computed, watch } from 'vue'
 import type { CustomerInfo } from '../types'
 
 const props = defineProps<{
@@ -124,17 +142,43 @@ const props = defineProps<{
   disabled?: boolean
 }>()
 
+const tagText = computed(() => {
+  return props.title.includes('源客户') ? '源客户' : '目标客户'
+})
+
+const tagType = computed(() => {
+  return props.title.includes('源客户') ? 'warning' : 'success'
+})
+
 const emit = defineEmits<{
   (e: 'select', customer: CustomerInfo | null): void
 }>()
 
 const showDetailModal = ref(false)
 const selectedCustomer = ref<CustomerInfo | null>(null)
+const selectedId = ref<string | null>(null)
 
-const handleSelectionChange = (selectedItems: CustomerInfo[]) => {
-  const customer = selectedItems.length > 0 ? selectedItems[0] : null
-  emit('select', customer)
+const handleRowClick = (row: CustomerInfo) => {
+  if (!props.disabled) {
+    selectedId.value = row.id
+    emit('select', row)
+  }
 }
+
+watch(selectedId, (newId) => {
+  if (newId) {
+    const customer = props.customers.find(c => c.id === newId)
+    if (customer) {
+      emit('select', customer)
+    }
+  }
+})
+
+defineExpose({
+  setSelected: (customer: CustomerInfo | null) => {
+    selectedId.value = customer?.id || null
+  }
+})
 
 const showBusinessDetail = (customer: CustomerInfo) => {
   selectedCustomer.value = customer
@@ -157,6 +201,26 @@ const getBusinessTagType = (businessId: string): string => {
 <style scoped>
 .customer-list-card {
   margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.customer-tag {
+  font-size: 12px;
+}
+
+:deep(.el-radio__label) {
+  display: none;
 }
 
 .customer-table {
