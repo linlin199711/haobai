@@ -44,7 +44,7 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
             <el-form-item label="客户等级">
-              <el-input v-model="formData.customerLevel" placeholder="请输入" maxlength="10" />
+              <el-input v-model="formData.customerLevel" disabled placeholder="系统自动生成" />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
@@ -53,7 +53,6 @@
                 v-model="formData.customerName"
                 placeholder="请输入"
                 maxlength="500"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -67,7 +66,6 @@
                 v-model="formData.customerNameCode"
                 placeholder="请输入"
                 maxlength="500"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -96,7 +94,6 @@
                 v-model="formData.areaCode"
                 placeholder="请输入"
                 maxlength="40"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -106,7 +103,6 @@
                 v-model="formData.phoneNumber"
                 placeholder="请输入"
                 maxlength="40"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -144,7 +140,6 @@
                 v-model="formData.installAddress"
                 placeholder="请输入"
                 maxlength="200"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -154,7 +149,6 @@
                 v-model="formData.shortName"
                 placeholder="请输入"
                 maxlength="200"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -164,7 +158,6 @@
                 v-model="formData.shortNameCode"
                 placeholder="请输入"
                 maxlength="200"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -174,7 +167,6 @@
                 v-model="formData.alias"
                 placeholder="请输入"
                 maxlength="200"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -188,7 +180,6 @@
                 v-model="formData.aliasCode"
                 placeholder="请输入"
                 maxlength="200"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -203,12 +194,16 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
             <el-form-item label="行业">
-              <el-input
-                v-model="formData.industry"
-                placeholder="请输入"
-                maxlength="200"
-                show-word-limit
-              />
+              <el-select v-model="formData.industry" placeholder="请选择" style="width: 100%">
+                <el-option label="教育" value="教育" />
+                <el-option label="医疗" value="医疗" />
+                <el-option label="金融" value="金融" />
+                <el-option label="餐饮" value="餐饮" />
+                <el-option label="零售" value="零售" />
+                <el-option label="制造" value="制造" />
+                <el-option label="科技" value="科技" />
+                <el-option label="其他" value="其他" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
@@ -217,7 +212,6 @@
                 v-model="formData.remark"
                 placeholder="请输入"
                 maxlength="500"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -231,7 +225,6 @@
                 v-model="formData.customerSort"
                 placeholder="请输入"
                 maxlength="20"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -265,7 +258,6 @@
                 v-model="formData.relatedKeywords"
                 placeholder="请输入"
                 maxlength="200"
-                show-word-limit
               />
             </el-form-item>
           </el-col>
@@ -309,6 +301,7 @@
       <el-table :data="formData.businessList" border stripe style="width: 100%">
         <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column prop="productName" label="业务名称" min-width="180" show-overflow-tooltip />
+
         <el-table-column prop="status" label="业务状态" width="100" align="center">
           <template #default="{ row }">
             <el-tag :type="getBusinessStatusType(row.status)">{{ getStatusLabel(row.status) }}</el-tag>
@@ -354,10 +347,12 @@
           <p><strong>业务名称：</strong>{{ selectedBusiness.productName }}</p>
           <p><strong>业务号码：</strong>
             <span v-if="selectedBusiness.formData">
-              <span v-for="(value, key) in selectedBusiness.formData" :key="key" v-if="key.includes('transferNumber') && value">
-                {{ value }}<br>
-              </span>
-              <span v-else>-</span>
+              <template v-for="(value, key) in selectedBusiness.formData" :key="key">
+                <span v-if="key.includes('transferNumber') && value">
+                  {{ value }}<br>
+                </span>
+              </template>
+              <span v-if="!Object.entries(selectedBusiness.formData).some(([k, v]) => k.includes('transferNumber') && v)">-</span>
             </span>
             <span v-else>-</span>
           </p>
@@ -397,12 +392,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useCustomerInfoStore } from './store/customerInfoStore'
 import type { CustomerBusiness } from './types/customerInfo'
 import { AuditStatusEnum, AuditStatusLabels } from '../CustomerAudit/types/customerAudit'
-import { ProductTypeNames, ProductTypeEnum } from '../CustomerAudit/types/customerAudit'
+import { ProductTypeNames } from '../CustomerAudit/types/customerAudit'
 
 // ==================== Props 和 Emits ====================
 
@@ -562,7 +557,7 @@ const handleViewBusiness = (row: CustomerBusiness) => {
 
 const handleCancelBusiness = (row: CustomerBusiness) => {
   ElMessageBox.confirm(
-    `确定要注销业务 "${row.businessName}" 吗？`,
+    `确定要注销业务 "${row.productName}" 吗？`,
     '注销确认',
     {
       confirmButtonText: '确定',
@@ -611,8 +606,8 @@ const loadData = () => {
     formData.businessList = [
       {
         id: 'O' + id + '_001',
-        productType: ProductTypeEnum.QUERY_TRANSFER,
-        productName: ProductTypeNames[ProductTypeEnum.QUERY_TRANSFER],
+        productType: 'query_transfer',
+        productName: ProductTypeNames['query_transfer'],
         status: AuditStatusEnum.APPROVED,
         submitTime: '2024-01-15 10:30:00',
         submitter: '张三',
@@ -627,8 +622,8 @@ const loadData = () => {
       },
       {
         id: 'O' + id + '_002',
-        productType: ProductTypeEnum.SMS_CARD,
-        productName: ProductTypeNames[ProductTypeEnum.SMS_CARD],
+        productType: 'sms_card',
+        productName: ProductTypeNames['sms_card'],
         status: AuditStatusEnum.APPROVED,
         submitTime: '2024-01-15 11:00:00',
         submitter: '张三',
@@ -639,8 +634,8 @@ const loadData = () => {
       },
       {
         id: 'O' + id + '_003',
-        productType: ProductTypeEnum.REAL_NAME_QUERY,
-        productName: ProductTypeNames[ProductTypeEnum.REAL_NAME_QUERY],
+        productType: 'real_name_query',
+        productName: ProductTypeNames['real_name_query'],
         status: AuditStatusEnum.PENDING,
         submitTime: '2024-01-16 09:15:00',
         submitter: '李四',
@@ -666,12 +661,6 @@ const loadData = () => {
 }
 
 // ==================== 生命周期 ====================
-
-watch(() => props.customerId, (newId) => {
-  if (newId) {
-    loadData()
-  }
-}, { immediate: true })
 
 onMounted(async () => {
   loading.value = true

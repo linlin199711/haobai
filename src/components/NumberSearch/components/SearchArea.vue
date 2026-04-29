@@ -99,7 +99,7 @@
         show-icon
       >
         <template #default>
-          <span>支持地市/区县名称搜索（如：输入"福州"或"鼓楼"）</span>
+          <span>支持地市/区县名称搜索、拼音首字母匹配（如：输入"fz"匹配"福州"）</span>
         </template>
       </el-alert>
     </div>
@@ -147,7 +147,7 @@ const areaKeyword = ref('')
 const areaInputRef = ref<HTMLInputElement>()
 
 // 搜索提示文字
-const areaPlaceholder = '请输入地区名称'
+const areaPlaceholder = '请输入地区名称或拼音首字母'
 
 // 主搜索按钮处理
 const handleMainSearch = () => {

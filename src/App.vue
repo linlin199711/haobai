@@ -79,7 +79,7 @@
               <div class="sub-menu-item" :class="{ active: currentModule === 'customerAudit' }" @click="handleCustomerManageItem('customerAudit')">
                 <span>客户业务审核</span>
               </div>
-              <div class="sub-menu-item" :class="{ active: currentModule === 'customerMigration' }" @click="handleCustomerManageItem('customerMigration')">
+              <div class="sub-menu-item" :class="{ active: currentModule === 'customerBusinessMigration' }" @click="handleCustomerManageItem('customerBusinessMigration')">
                 <span>客户业务迁移</span>
               </div>
             </div>
@@ -401,7 +401,7 @@
         />
 
         <!-- 客户业务迁移模块 -->
-        <CustomerMigration v-else-if="currentModule === 'customerMigration'" />
+        <CustomerBusinessMigration v-else-if="currentModule === 'customerBusinessMigration'" />
       </main>
 
     </div>
@@ -556,7 +556,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
   Phone, CircleCheck, VideoPlay, Document, User, Setting,
@@ -575,80 +575,79 @@ import { useNotificationStore } from './stores/notificationStore'
 // 使用通知Store
 const notificationStore = useNotificationStore()
 
-// 功能模块组件 - 动态导入
-const NumberSearch = defineAsyncComponent(() => import('./components/NumberSearch/NumberSearch.vue'))
-const NonNumberQueryModule = defineAsyncComponent(() => import('./components/Modules/NonNumberQueryModule.vue'))
-const CarMoveModule = defineAsyncComponent(() => import('./components/Modules/CarMoveModule.vue'))
-const Pbx30Module = defineAsyncComponent(() => import('./components/Modules/Pbx30Module.vue'))
+// 功能模块组件
+import NumberSearch from './components/NumberSearch/NumberSearch.vue'
+import NonNumberQueryModule from './components/Modules/NonNumberQueryModule.vue'
+import CarMoveModule from './components/Modules/CarMoveModule.vue'
+import Pbx30Module from './components/Modules/Pbx30Module.vue'
 
 // CRM关键词选择组件
-const KeywordSelectModal = defineAsyncComponent(() => import('./components/CRM/KeywordSelect').then(m => ({ default: m.KeywordSelectModal })))
+import { KeywordSelectModal } from './components/CRM/KeywordSelect'
 
 // 销售品关键字管理组件
-const KeywordManage = defineAsyncComponent(() => import('./components/CRM/KeywordManage').then(m => ({ default: m.KeywordManage })))
+import { KeywordManage } from './components/CRM/KeywordManage'
 
 // 同义关键字管理组件
-const SynonymKeywordManager = defineAsyncComponent(() => import('./components/Settings/SynonymKeyword').then(m => ({ default: m.SynonymKeywordManager })))
+import { SynonymKeywordManager } from './components/Settings/SynonymKeyword'
 
 // 销售单元信息管理组件
-const SalesUnitManage = defineAsyncComponent(() => import('./components/CRM/SalesUnitManage/SalesUnitManage.vue'))
+import SalesUnitManage from './components/CRM/SalesUnitManage/SalesUnitManage.vue'
 
 // 审核组件
-const KeywordAudit = defineAsyncComponent(() => import('./components/CRM/KeywordManage/KeywordAudit.vue'))
-const SalesUnitAudit = defineAsyncComponent(() => import('./components/CRM/SalesUnitManage/SalesUnitAudit.vue'))
+import KeywordAudit from './components/CRM/KeywordManage/KeywordAudit.vue'
+import SalesUnitAudit from './components/CRM/SalesUnitManage/SalesUnitAudit.vue'
 
 // 客户业务审核组件
-const CustomerAudit = defineAsyncComponent(() => import('./components/CRM/CustomerAudit/CustomerAudit.vue'))
+import CustomerAudit from './components/CRM/CustomerAudit/CustomerAudit.vue'
 
 // 非号码信息管理组件
-const NonNumberInfoManage = defineAsyncComponent(() => import('./components/Settings/NonNumberInfo/NonNumberInfoManage.vue'))
+import NonNumberInfoManage from './components/Settings/NonNumberInfo/NonNumberInfoManage.vue'
 
 // 更新说明组件
-const UpdateNotes = defineAsyncComponent(() => import('./components/Settings/UpdateNotes/UpdateNotes.vue'))
+import UpdateNotes from './components/Settings/UpdateNotes/UpdateNotes.vue'
 
 // 人工话务员接续报表组件
-const OperatorReport = defineAsyncComponent(() => import('./components/Reports/OperatorReport/OperatorReport.vue'))
+import OperatorReport from './components/Reports/OperatorReport/OperatorReport.vue'
 
 // 优推商家查询量报表组件
-const MerchantQueryReport = defineAsyncComponent(() => import('./components/Reports/MerchantQueryReport/MerchantQueryReport.vue'))
+import MerchantQueryReport from './components/Reports/MerchantQueryReport/MerchantQueryReport.vue'
 
 // 关键词查询量及资源统计报表组件
-const KeywordQueryReport = defineAsyncComponent(() => import('./components/Reports/KeywordQueryReport/KeywordQueryReport.vue'))
+import KeywordQueryReport from './components/Reports/KeywordQueryReport/KeywordQueryReport.vue'
 
 // 话务员输入关键词搜索量统计表组件
-const KeywordSearchReport = defineAsyncComponent(() => import('./components/Reports/KeywordSearchReport/KeywordSearchReport.vue'))
+import KeywordSearchReport from './components/Reports/KeywordSearchReport/KeywordSearchReport.vue'
 
 // 114推广/百事通加盟商家数据报表组件
-const MerchantDataReport = defineAsyncComponent(() => import('./components/Reports/MerchantDataReport/MerchantDataReport.vue'))
+import MerchantDataReport from './components/Reports/MerchantDataReport/MerchantDataReport.vue'
 
 // 商家报号明细数据报表组件
-const MerchantCallReport = defineAsyncComponent(() => import('./components/Reports/MerchantCallReport/MerchantCallReport.vue'))
-const ProvinceCallReport = defineAsyncComponent(() => import('./components/Reports/ProvinceCallReport/ProvinceCallReport.vue'))
-const NumberTransferReport = defineAsyncComponent(() => import('./components/Reports/NumberTransferReport/NumberTransferReport.vue'))
-const OperatorWorkReport = defineAsyncComponent(() => import('./components/Reports/OperatorWorkReport/OperatorWorkReport.vue'))
-const OperatorAttendanceReport = defineAsyncComponent(() => import('./components/Reports/OperatorAttendanceReport/OperatorAttendanceReport.vue'))
-const OperatorBusyDetailReport = defineAsyncComponent(() => import('./components/Reports/OperatorBusyDetailReport/OperatorBusyDetailReport.vue'))
-const NumberQueryDetailReport = defineAsyncComponent(() => import('./components/Reports/NumberQueryDetailReport/NumberQueryDetailReport.vue'))
-const UserSatisfactionReport = defineAsyncComponent(() => import('./components/Reports/UserSatisfactionReport/UserSatisfactionReport.vue'))
+import MerchantCallReport from './components/Reports/MerchantCallReport/MerchantCallReport.vue'
+import ProvinceCallReport from './components/Reports/ProvinceCallReport/ProvinceCallReport.vue'
+import NumberTransferReport from './components/Reports/NumberTransferReport/NumberTransferReport.vue'
+import OperatorWorkReport from './components/Reports/OperatorWorkReport/OperatorWorkReport.vue'
+import OperatorAttendanceReport from './components/Reports/OperatorAttendanceReport/OperatorAttendanceReport.vue'
+import OperatorBusyDetailReport from './components/Reports/OperatorBusyDetailReport/OperatorBusyDetailReport.vue'
+import NumberQueryDetailReport from './components/Reports/NumberQueryDetailReport/NumberQueryDetailReport.vue'
+import UserSatisfactionReport from './components/Reports/UserSatisfactionReport/UserSatisfactionReport.vue'
 
 // 组织架构管理组件
-const OrganizationManage = defineAsyncComponent(() => import('./components/Settings/Organization/OrganizationManage.vue'))
+import OrganizationManage from './components/Settings/Organization/OrganizationManage.vue'
 
 // AI 接话分流管理组件
-const AiDiversionManage = defineAsyncComponent(() => import('./components/Settings/AiDiversion/AiDiversionManage.vue'))
+import AiDiversionManage from './components/Settings/AiDiversion/AiDiversionManage.vue'
 
 // 客户基本信息组件
-const CustomerInfoList = defineAsyncComponent(() => import('./components/CRM/CustomerInfo').then(m => ({ default: m.CustomerInfoList })))
-const CustomerInfoDetail = defineAsyncComponent(() => import('./components/CRM/CustomerInfo').then(m => ({ default: m.CustomerInfoDetail })))
+import { CustomerInfoList, CustomerInfoDetail } from './components/CRM/CustomerInfo'
 
 // 客户业务迁移组件
-const CustomerMigration = defineAsyncComponent(() => import('./components/Modules/CustomerMigration').then(m => ({ default: m.CustomerMigration })))
+import { CustomerBusinessMigration } from './components/CRM/CustomerBusinessMigration'
 
 // 底部用户信息组件
-const BottomUserInfo = defineAsyncComponent(() => import('./components/BottomUserInfo/BottomUserInfo.vue'))
+import BottomUserInfo from './components/BottomUserInfo/BottomUserInfo.vue'
 
 // 页面说明组件 - 完全独立，与业务系统无任何关联
-const PageInstructionDrawer = defineAsyncComponent(() => import('./components/PageInstruction').then(m => ({ default: m.PageInstructionDrawer })))
+import { PageInstructionDrawer } from './components/PageInstruction'
 
 // 当前显示的模块（默认更新说明页面）
 const currentModule = ref('updateNotes')
@@ -705,7 +704,7 @@ const bottomInfoHeight = '40px'
 // 页面说明配置 - 支持的页面列表
 const supportedPageInstructions = [
   'numberSearch', 'nonNumberQuery', 'carMove', 'pbx30',
-  'customerInfoList', 'customerInfoDetail', 'customerAudit',
+  'customerInfoList', 'customerInfoDetail', 'customerAudit', 'customerBusinessMigration',
   'keywordManage', 'synonymKeywordManage', 'associateKeywordManage',
   'salesUnitManage', 'keywordAudit', 'salesUnitAudit',
   'keywordSelect', 'nonNumberInfoManage', 'aiDiversion', 'organization',
@@ -721,6 +720,7 @@ const pageInstructionTitles: Record<string, string> = {
   customerInfoList: '客户基础信息',
   customerInfoDetail: '客户详情',
   customerAudit: '客户业务审核',
+  customerBusinessMigration: '客户业务迁移',
   keywordManage: '销售品关键字',
   synonymKeywordManage: '同义关键字',
   associateKeywordManage: '联想关键字',
@@ -798,8 +798,8 @@ const handleCustomerManageItem = (item: string) => {
   } else if (item === 'customerAudit') {
     currentModule.value = 'customerAudit'
     // 保持客户管理菜单展开
-  } else if (item === 'customerMigration') {
-    currentModule.value = 'customerMigration'
+  } else if (item === 'customerBusinessMigration') {
+    currentModule.value = 'customerBusinessMigration'
     // 保持客户管理菜单展开
   }
 }
@@ -1102,11 +1102,11 @@ $sidebar-active: #00a8ff;
   min-height: 100vh;
 }
 
-// 左侧导航栏 - 从话务条下方开始
+// 左侧导航栏 - 上移到顶部，与话务条并排
 .left-sidebar {
   position: fixed;
   left: 0;
-  top: 48px; // 从话务条下方开始
+  top: 0; // 上移到顶部
   bottom: 0;
   width: 220px;
   background: $sidebar-bg;

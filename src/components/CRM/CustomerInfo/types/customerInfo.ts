@@ -80,17 +80,19 @@ export interface RelatedIntent {
 /** 客户业务信息 */
 export interface CustomerBusiness {
   /** 业务ID */
-  businessId: string
+  id: string
+  /** 业务类型 */
+  productType: string
   /** 业务名称 */
-  businessName: string
-  /** 业务编码 */
-  businessCode: string
+  productName: string
   /** 业务状态 */
-  status: BusinessStatus
-  /** 生效时间 */
-  effectiveTime: string
-  /** 过期时间 */
-  expireTime: string
+  status: string
+  /** 提交时间 */
+  submitTime: string
+  /** 提交人 */
+  submitter: string
+  /** 业务表单数据 */
+  formData?: Record<string, any>
 }
 
 /** 完整客户信息（列表展示） */

@@ -6,6 +6,18 @@
         <h2 class="page-title">操作员工作情况</h2>
         <p class="page-note">支持数据导出功能</p>
       </div>
+      <!-- 页面说明按钮 -->
+      <div class="header-actions">
+        <el-button
+          type="default"
+          plain
+          @click="showPageInstruction = true"
+          class="page-instruction-btn"
+        >
+          <el-icon class="icon"><QuestionFilled /></el-icon>
+          页面说明
+        </el-button>
+      </div>
     </div>
 
     <!-- 筛选区卡片 -->
@@ -107,15 +119,6 @@
             <el-button type="success" @click="handleExport">
               <el-icon><Download /></el-icon>
               导出数据
-            </el-button>
-            <el-button
-              type="default"
-              plain
-              @click="showPageInstruction = true"
-              class="page-instruction-btn"
-            >
-              <el-icon><QuestionFilled /></el-icon>
-              页面说明
             </el-button>
           </el-col>
         </el-row>
