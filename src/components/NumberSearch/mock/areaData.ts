@@ -224,10 +224,8 @@ export const searchArea = async (params: AreaSearchParams): Promise<AreaSearchRe
   // 搜索地市
   mockCities.forEach(city => {
     const matchName = city.name.toLowerCase().includes(keyword)
-    const matchPinyin = city.pinyin.toLowerCase().includes(keyword)
-    const matchInitial = city.pinyinInitial.toLowerCase().includes(keyword)
 
-    if (matchName || matchPinyin || matchInitial) {
+    if (matchName) {
       results.push({
         id: `city_${city.id}`,
         type: 'city',
@@ -240,10 +238,8 @@ export const searchArea = async (params: AreaSearchParams): Promise<AreaSearchRe
   mockCities.forEach(city => {
     city.districts.forEach(district => {
       const matchName = district.name.toLowerCase().includes(keyword)
-      const matchPinyin = district.pinyin.toLowerCase().includes(keyword)
-      const matchInitial = district.pinyinInitial.toLowerCase().includes(keyword)
 
-      if (matchName || matchPinyin || matchInitial) {
+      if (matchName) {
         results.push({
           id: `district_${district.id}`,
           type: 'district',

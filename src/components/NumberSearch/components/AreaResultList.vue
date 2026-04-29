@@ -110,7 +110,7 @@
       <template #description>
         <div class="empty-description">
           <p>暂无匹配的地区信息</p>
-          <p class="empty-tip">请尝试输入其他地区名称或拼音首字母</p>
+          <p class="empty-tip">请尝试输入其他地区名称</p>
         </div>
       </template>
     </el-empty>
