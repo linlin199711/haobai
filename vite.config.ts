@@ -1,11 +1,21 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
-  // 关键：使用相对路径，使打包后的文件可以双击打开
   base: './',
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    })
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
@@ -16,12 +26,9 @@ export default defineConfig({
     host: true
   },
   build: {
-    // 确保资源使用相对路径
     assetsDir: 'assets',
-    // 生成静态资源时包含哈希，避免缓存问题
     rollupOptions: {
       output: {
-        // 确保 chunk 文件使用相对路径引用
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
@@ -34,8 +41,14 @@ export default defineConfig({
             return 'assets/css/[name]-[hash][extname]'
           }
           return 'assets/[name]-[hash][extname]'
+        },
+        manualChunks: {
+          'element-plus': ['element-plus'],
+          'wangeditor': ['@wangeditor/editor', '@wangeditor/editor-for-vue'],
+          'xlsx': ['xlsx']
         }
       }
-    }
+    },
+    chunkSizeWarningLimit: 1000
   }
 })
