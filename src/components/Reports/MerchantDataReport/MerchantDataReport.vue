@@ -3,18 +3,6 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <h2 class="page-title">114推广/百事通加盟商家数据报表</h2>
-      <!-- 页面说明按钮 -->
-      <div class="header-actions">
-        <el-button
-          type="default"
-          plain
-          @click="showPageInstruction = true"
-          class="page-instruction-btn"
-        >
-          <el-icon class="icon"><QuestionFilled /></el-icon>
-          页面说明
-        </el-button>
-      </div>
     </div>
 
     <!-- 筛选区卡片 -->
@@ -238,12 +226,6 @@
       </el-table>
     </el-card>
 
-    <!-- 页面说明抽屉 -->
-    <PageInstructionDrawer
-      v-model="showPageInstruction"
-      :page-id="'merchant-data-report'"
-      :page-title="'114推广/百事通加盟商家数据报表'"
-    />
   </div>
 </template>
 
@@ -251,8 +233,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { QuestionFilled } from '@element-plus/icons-vue'
-import { PageInstructionDrawer } from '../../PageInstruction'
+
 import * as XLSX from 'xlsx'
 import type { FilterForm, MerchantDataItem, ReportQueryParams } from './types/merchantDataReport'
 import { businessTypeOptions, fetchMerchantData, calculateSummaryRow } from './mock/merchantDataMock'
@@ -276,8 +257,7 @@ const detailData = ref<MerchantDataItem[]>([])
 const summaryRow = ref<any>(null)
 const emptyText = ref('暂无114推广商家业务统计数据')
 
-// 页面说明抽屉
-const showPageInstruction = ref(false)
+
 
 /**
  * 表格数据（包含合计行）

@@ -103,8 +103,23 @@
           </template>
         </el-table-column>
 
+        <!-- 业务 -->
+        <el-table-column label="业务" min-width="150">
+          <template #default="{ row }">
+            <div class="service-tags">
+              <el-tag v-if="hasService(row, 'elegant')" type="primary" size="small">优推</el-tag>
+              <el-tag v-if="hasService(row, 'brand')" type="success" size="small">广告</el-tag>
+              <el-tag v-if="hasService(row, 'realName')" type="warning" size="small">实名</el-tag>
+              <el-tag v-if="hasService(row, 'transfer')" type="danger" size="small">转接</el-tag>
+              <el-tag v-if="hasService(row, 'sms')" type="default" size="small">短信</el-tag>
+              <el-tag v-if="hasService(row, 'card')" type="info" size="small">名片</el-tag>
+              <span v-if="!row.services || row.services.length === 0 || (row.services && row.services.length === 1 && row.services.includes('dial'))" class="no-service">-</span>
+            </div>
+          </template>
+        </el-table-column>
+
         <!-- 操作列 -->
-        <el-table-column label="操作" width="360" fixed="right">
+        <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <div class="operation-btns">
               <!-- 拍号：停机或保密不展示 -->
@@ -117,36 +132,6 @@
               >
                 拍号
               </el-button>
-              <!-- 优推 -->
-              <el-button
-                v-if="hasService(row, 'elegant')"
-                type="primary"
-                link
-                size="small"
-                @click.stop="handleElegant(row)"
-              >
-                优推
-              </el-button>
-              <!-- 广告 -->
-              <el-button
-                v-if="hasService(row, 'brand')"
-                type="primary"
-                link
-                size="small"
-                @click.stop="handleBrand(row)"
-              >
-                广告
-              </el-button>
-              <!-- 实名 -->
-              <el-button
-                v-if="hasService(row, 'realName')"
-                type="primary"
-                link
-                size="small"
-                @click.stop="handleRealName(row)"
-              >
-                实名
-              </el-button>
               <!-- 转接 -->
               <el-button
                 v-if="hasService(row, 'transfer')"
@@ -157,16 +142,6 @@
                 @click.stop="handleTransfer(row)"
               >
                 转接
-              </el-button>
-              <!-- 短信 -->
-              <el-button
-                v-if="hasService(row, 'sms')"
-                type="primary"
-                link
-                size="small"
-                @click.stop="handleSms(row)"
-              >
-                短信
               </el-button>
             </div>
           </template>
@@ -345,6 +320,11 @@ const handleSms = (row: CustomerInfo) => {
   emit('sms', row)
 }
 
+// 名片
+const handleCard = (row: CustomerInfo) => {
+  console.log('名片', row)
+}
+
 // 上一页
 const handlePrevPage = () => {
   if (props.pagination.page > 1) {
@@ -447,6 +427,16 @@ const handleJump = () => {
   .confidential-text {
     color: #909399;
     letter-spacing: 2px;
+  }
+
+  .service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    .no-service {
+      color: #c0c4cc;
+    }
   }
 
   .operation-btns {

@@ -3,18 +3,6 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <h2 class="page-title">商家报号明细数据报表</h2>
-      <!-- 页面说明按钮 -->
-      <div class="header-actions">
-        <el-button
-          type="default"
-          plain
-          @click="showPageInstruction = true"
-          class="page-instruction-btn"
-        >
-          <el-icon class="icon"><QuestionFilled /></el-icon>
-          页面说明
-        </el-button>
-      </div>
     </div>
 
     <!-- 筛选区卡片 -->
@@ -246,12 +234,6 @@
       </div>
     </el-card>
 
-    <!-- 页面说明抽屉 -->
-    <PageInstructionDrawer
-      v-model="showPageInstruction"
-      :page-id="'merchant-call-report'"
-      :page-title="'商家报号明细数据报表'"
-    />
   </div>
 </template>
 
@@ -259,8 +241,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { QuestionFilled } from '@element-plus/icons-vue'
-import { PageInstructionDrawer } from '../../PageInstruction'
+
 import * as XLSX from 'xlsx'
 import type { FilterForm, MerchantCallItem, ReportQueryParams } from './types/merchantCallReport'
 import { cityDistrictMap, cityList as allCities } from './mock/merchantCallMock'
@@ -302,8 +283,7 @@ const loading = ref(false)
 const allData = ref<MerchantCallItem[]>([])
 const emptyText = ref('暂无商家报号明细数据')
 
-// 页面说明抽屉
-const showPageInstruction = ref(false)
+
 
 /**
  * 加载数据

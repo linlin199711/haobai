@@ -202,6 +202,16 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
+            <el-form-item label="行业">
+              <el-input
+                v-model="formData.industry"
+                placeholder="请输入"
+                maxlength="200"
+                show-word-limit
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="6">
             <el-form-item label="备注">
               <el-input
                 v-model="formData.remark"
@@ -211,6 +221,10 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
+
+        <!-- 第六行 -->
+        <el-row :gutter="24">
           <el-col :xs="24" :sm="12" :md="6">
             <el-form-item label="客户排序">
               <el-input
@@ -221,10 +235,6 @@
               />
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <!-- 第六行 -->
-        <el-row :gutter="24">
           <el-col :xs="24" :sm="12" :md="6">
             <el-form-item label="保密用户性质">
               <el-select v-model="formData.confidentialityLevel" placeholder="请选择" style="width: 100%">
@@ -242,8 +252,8 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="6">
-            <el-form-item label="是否有投诉">
-              <el-select v-model="formData.hasComplaint" placeholder="请选择" style="width: 100%">
+            <el-form-item label="是否首报号">
+              <el-select v-model="formData.isFirstReport" placeholder="请选择" style="width: 100%">
                 <el-option label="是" value="是" />
                 <el-option label="否" value="否" />
               </el-select>
@@ -473,13 +483,14 @@ const formData = reactive({
   // 第五行
   aliasCode: '',
   customerCategory: '企业客户',
+  industry: '',
   remark: '',
-  customerSort: '10',
   
   // 第六行
+  customerSort: '10',
   confidentialityLevel: '否',
   numberStatus: '使用',
-  hasComplaint: '否',
+  isFirstReport: '否',
   relatedKeywords: '福州测试用户',
   
   // 关联信息

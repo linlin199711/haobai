@@ -4,18 +4,6 @@
     <div class="page-header">
       <h2 class="page-title">号码转接报表</h2>
       <p class="page-note">支持数据导出功能</p>
-      <!-- 页面说明按钮 -->
-      <div class="header-actions">
-        <el-button
-          type="default"
-          plain
-          @click="showPageInstruction = true"
-          class="page-instruction-btn"
-        >
-          <el-icon class="icon"><QuestionFilled /></el-icon>
-          页面说明
-        </el-button>
-      </div>
     </div>
 
     <!-- 筛选区卡片 -->
@@ -217,12 +205,6 @@
       </div>
     </el-card>
 
-    <!-- 页面说明抽屉 -->
-    <PageInstructionDrawer
-      v-model="showPageInstruction"
-      :page-id="'number-transfer-report'"
-      :page-title="'号码转接报表'"
-    />
   </div>
 </template>
 
@@ -230,8 +212,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { QuestionFilled } from '@element-plus/icons-vue'
-import { PageInstructionDrawer } from '../../PageInstruction'
+
 import * as XLSX from 'xlsx'
 import type { FilterForm, NumberTransferItem, ReportQueryParams } from './types/numberTransferReport'
 import { 
@@ -270,8 +251,7 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const emptyText = ref('暂无号码转接业务统计数据')
 
-// 页面说明抽屉
-const showPageInstruction = ref(false)
+
 
 /**
  * 加载数据

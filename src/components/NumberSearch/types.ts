@@ -18,6 +18,31 @@ export interface SearchParams {
   pageSize?: number
 }
 
+/** 优推业务信息 */
+export interface ElegantBusiness {
+  salesArea: string
+  keywords: string
+  keywordCode: string
+}
+
+/** 实名业务信息 */
+export interface RealNameBusiness {
+  companyName: string
+  realNameCode: string
+}
+
+/** 转接业务信息 */
+export interface TransferBusiness {
+  transferNumbers: string[]
+  transferTimeStart: string
+  transferTimeEnd: string
+}
+
+/** 企业广告业务信息 */
+export interface BrandBusiness {
+  adText: string
+}
+
 /** 客户信息 */
 export interface CustomerInfo {
   id: string
@@ -29,6 +54,10 @@ export interface CustomerInfo {
   city: string
   district: string
   region: string
+  shortName: string
+  shortNameCode: string
+  alias: string
+  aliasCode: string
   industry: string
   remark: string
   relatedWords: string
@@ -37,12 +66,20 @@ export interface CustomerInfo {
   level: number
   parentId?: string
   children?: CustomerInfo[]
-  /** 业务类型：dial-拍号, elegant-优推, brand-品牌, realName-实名, transfer-转接, sms-短信 */
+  /** 业务类型：dial-拍号, elegant-优推, brand-品牌, realName-实名, transfer-转接, sms-短信, card-名片 */
   services?: string[]
   /** 是否优先播报 */
   isPriority?: boolean
   /** 优推轮询计数器（用于记录该商户被拍号次数） */
   elegantCount?: number
+  /** 优推业务信息 */
+  elegantBusiness?: ElegantBusiness
+  /** 实名业务信息 */
+  realNameBusiness?: RealNameBusiness
+  /** 转接业务信息 */
+  transferBusiness?: TransferBusiness
+  /** 企业广告业务信息 */
+  brandBusiness?: BrandBusiness
 }
 
 /** 搜索结果 */

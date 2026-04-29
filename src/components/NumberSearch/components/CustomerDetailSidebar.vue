@@ -46,6 +46,10 @@
       <div class="detail-section">
         <h4 class="section-title">其他信息</h4>
         <el-descriptions :column="1" border>
+          <el-descriptions-item label="简称">{{ customer.shortName || '--' }}</el-descriptions-item>
+          <el-descriptions-item label="简称编码">{{ customer.shortNameCode || '--' }}</el-descriptions-item>
+          <el-descriptions-item label="别名">{{ customer.alias || '--' }}</el-descriptions-item>
+          <el-descriptions-item label="别名编码">{{ customer.aliasCode || '--' }}</el-descriptions-item>
           <el-descriptions-item label="行业">{{ customer.industry || '--' }}</el-descriptions-item>
           <el-descriptions-item label="备注">{{ customer.remark || '--' }}</el-descriptions-item>
           <el-descriptions-item label="关联词汇">{{ customer.relatedWords || '--' }}</el-descriptions-item>
@@ -67,6 +71,51 @@
             </el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="级别">{{ customer.level }}级</el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <!-- 优推业务信息 -->
+      <div v-if="customer.elegantBusiness" class="detail-section">
+        <h4 class="section-title">优推业务信息</h4>
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="销售区域">{{ customer.elegantBusiness.salesArea || '--' }}</el-descriptions-item>
+          <el-descriptions-item label="购买关键词">{{ customer.elegantBusiness.keywords || '--' }}</el-descriptions-item>
+          <el-descriptions-item label="关键词编码">{{ customer.elegantBusiness.keywordCode || '--' }}</el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <!-- 实名业务信息 -->
+      <div v-if="customer.realNameBusiness" class="detail-section">
+        <h4 class="section-title">实名业务信息</h4>
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="公司实名">{{ customer.realNameBusiness.companyName || '--' }}</el-descriptions-item>
+          <el-descriptions-item label="实名编码">{{ customer.realNameBusiness.realNameCode || '--' }}</el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <!-- 转接业务信息 -->
+      <div v-if="customer.transferBusiness" class="detail-section">
+        <h4 class="section-title">转接业务信息</h4>
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="转接号码">
+            <div v-if="customer.transferBusiness.transferNumbers && customer.transferBusiness.transferNumbers.length > 0">
+              <div v-for="(num, index) in customer.transferBusiness.transferNumbers" :key="index">
+                {{ num }}
+              </div>
+            </div>
+            <span v-else>--</span>
+          </el-descriptions-item>
+          <el-descriptions-item label="转接时段">
+            {{ customer.transferBusiness.transferTimeStart || '--' }} - {{ customer.transferBusiness.transferTimeEnd || '--' }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <!-- 企业广告业务信息 -->
+      <div v-if="customer.brandBusiness" class="detail-section">
+        <h4 class="section-title">企业广告业务信息</h4>
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="广告文字">{{ customer.brandBusiness.adText || '--' }}</el-descriptions-item>
         </el-descriptions>
       </div>
     </div>

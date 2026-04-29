@@ -158,7 +158,11 @@
       <!-- 列表表格 -->
       <el-table :data="recordList" v-loading="loading" stripe border>
         <el-table-column type="index" label="序号" width="60" align="center" />
-        <el-table-column prop="phoneNumber" label="来电号码" width="120" />
+        <el-table-column label="来电号码" width="120">
+          <template #default="{ row }">
+            {{ maskPhone(row.phoneNumber) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="fullPlateNumber" label="车牌号" width="120" />
         <el-table-column prop="plateColorLabel" label="车牌颜色" width="90" />
         <el-table-column prop="registerTime" label="登记时间" width="160" />
@@ -378,6 +382,12 @@ const handleSizeChange = (val: number) => {
 const handlePageChange = (val: number) => {
   pagination.page = val
   handleSearch()
+}
+
+// 手机号脱敏
+const maskPhone = (phone: string) => {
+  if (!phone) return '-'
+  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
 }
 
 // 疑似套牌切换

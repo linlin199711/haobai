@@ -84,6 +84,22 @@
         <h4 class="section-title">其他信息</h4>
         <div class="info-list">
           <div class="info-item">
+            <span class="info-label">简称</span>
+            <span class="info-value">{{ customer.shortName || '--' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">简称编码</span>
+            <span class="info-value">{{ customer.shortNameCode || '--' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">别名</span>
+            <span class="info-value">{{ customer.alias || '--' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">别名编码</span>
+            <span class="info-value">{{ customer.aliasCode || '--' }}</span>
+          </div>
+          <div class="info-item">
             <span class="info-label">行业</span>
             <span class="info-value">{{ customer.industry || '--' }}</span>
           </div>
@@ -125,27 +141,71 @@
         </div>
       </div>
 
-      <!-- 级联关系 -->
-      <div class="detail-section" v-if="cascadeData.parent || (cascadeData.children && cascadeData.children.length > 0)">
-        <h4 class="section-title">级联关系</h4>
-        
-        <!-- 上级 -->
-        <div v-if="cascadeData.parent" class="cascade-section">
-          <div class="cascade-label">上级单位</div>
-          <div class="cascade-item">
-            <el-icon><ArrowUp /></el-icon>
-            <span>{{ cascadeData.parent.name }}</span>
-            <el-tag size="small" type="info">{{ cascadeData.parent.phoneNumber }}</el-tag>
+      <!-- 优推业务信息 -->
+      <div v-if="customer.elegantBusiness" class="detail-section">
+        <h4 class="section-title">优推业务信息</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">销售区域</span>
+            <span class="info-value">{{ customer.elegantBusiness.salesArea || '--' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">购买关键词</span>
+            <span class="info-value">{{ customer.elegantBusiness.keywords || '--' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">关键词编码</span>
+            <span class="info-value">{{ customer.elegantBusiness.keywordCode || '--' }}</span>
           </div>
         </div>
+      </div>
 
-        <!-- 下级 -->
-        <div v-if="cascadeData.children && cascadeData.children.length > 0" class="cascade-section">
-          <div class="cascade-label">下级单位 ({{ cascadeData.children.length }})</div>
-          <div v-for="child in cascadeData.children" :key="child.id" class="cascade-item">
-            <el-icon><ArrowDown /></el-icon>
-            <span>{{ child.name }}</span>
-            <el-tag size="small" type="info">{{ child.phoneNumber }}</el-tag>
+      <!-- 实名业务信息 -->
+      <div v-if="customer.realNameBusiness" class="detail-section">
+        <h4 class="section-title">实名业务信息</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">公司实名</span>
+            <span class="info-value">{{ customer.realNameBusiness.companyName || '--' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">实名编码</span>
+            <span class="info-value">{{ customer.realNameBusiness.realNameCode || '--' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 转接业务信息 -->
+      <div v-if="customer.transferBusiness" class="detail-section">
+        <h4 class="section-title">转接业务信息</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">转接号码</span>
+            <span class="info-value">
+              <template v-if="customer.transferBusiness.transferNumbers && customer.transferBusiness.transferNumbers.length > 0">
+                <div v-for="(num, index) in customer.transferBusiness.transferNumbers" :key="index">
+                  {{ num }}
+                </div>
+              </template>
+              <span v-else>--</span>
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">转接时段</span>
+            <span class="info-value">
+              {{ customer.transferBusiness.transferTimeStart || '--' }} - {{ customer.transferBusiness.transferTimeEnd || '--' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 企业广告业务信息 -->
+      <div v-if="customer.brandBusiness" class="detail-section">
+        <h4 class="section-title">企业广告业务信息</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">广告文字</span>
+            <span class="info-value">{{ customer.brandBusiness.adText || '--' }}</span>
           </div>
         </div>
       </div>
@@ -156,15 +216,11 @@
 </template>
 
 <script setup lang="ts">
-import { Close, ArrowUp, ArrowDown } from '@element-plus/icons-vue'
+import { Close } from '@element-plus/icons-vue'
 import type { CustomerInfo } from '../types'
 
 interface Props {
   customer: CustomerInfo | null
-  cascadeData: {
-    parent: CustomerInfo | null
-    children: CustomerInfo[]
-  }
 }
 
 defineProps<Props>()

@@ -3,18 +3,6 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <h2 class="page-title">话务员输入关键词搜索量统计表</h2>
-      <!-- 页面说明按钮 -->
-      <div class="header-actions">
-        <el-button
-          type="default"
-          plain
-          @click="showPageInstruction = true"
-          class="page-instruction-btn"
-        >
-          <el-icon class="icon"><QuestionFilled /></el-icon>
-          页面说明
-        </el-button>
-      </div>
     </div>
 
     <!-- 筛选区卡片 -->
@@ -249,12 +237,6 @@
       </div>
     </el-card>
 
-    <!-- 页面说明抽屉 -->
-    <PageInstructionDrawer
-      v-model="showPageInstruction"
-      :page-id="'keyword-search-report'"
-      :page-title="'话务员输入关键词搜索量统计表'"
-    />
   </div>
 </template>
 
@@ -262,8 +244,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { QuestionFilled } from '@element-plus/icons-vue'
-import { PageInstructionDrawer } from '../../PageInstruction'
+
 import * as XLSX from 'xlsx'
 import type { FilterForm, KeywordSearchItem, ReportQueryParams } from './types/keywordSearchReport'
 import { cityList, periodOptions, industryList } from './mock/keywordSearchMock'
@@ -289,8 +270,7 @@ const loading = ref(false)
 const allData = ref<KeywordSearchItem[]>([])
 const emptyText = ref('暂无话务员关键词搜索统计数据')
 
-// 页面说明抽屉
-const showPageInstruction = ref(false)
+
 
 /**
  * 加载数据

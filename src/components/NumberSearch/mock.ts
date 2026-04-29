@@ -229,6 +229,10 @@ const generateMockData = (): CustomerInfo[] => {
     city: '福州市',
     district: '闽侯县',
     region: '福建省福州市',
+    shortName: '福大',
+    shortNameCode: 'fd001',
+    alias: '福州',
+    aliasCode: 'fz01',
     industry: '教育',
     remark: '211工程重点大学',
     relatedWords: '福大 福州大学 学府南路',
@@ -236,7 +240,24 @@ const generateMockData = (): CustomerInfo[] => {
     isOutOfService: false,
     level: 1,
     children: fuzhouUniversityChildren,
-    services: ['dial', 'elegant', 'brand', 'realName', 'transfer', 'sms']
+    services: ['dial', 'elegant', 'brand', 'realName', 'transfer', 'sms', 'card'],
+    elegantBusiness: {
+      salesArea: '福州 全市',
+      keywords: '空调清洗、空调清洁',
+      keywordCode: 'ktqx'
+    },
+    realNameBusiness: {
+      companyName: '福州大学',
+      realNameCode: 'RM20240001'
+    },
+    transferBusiness: {
+      transferNumbers: ['0591-22866667', '0591-22866668', '0591-22866669'],
+      transferTimeStart: '08:00',
+      transferTimeEnd: '22:00'
+    },
+    brandBusiness: {
+      adText: '您好，欢迎致电福州大学'
+    }
   })
   
   // 添加福州大学下级到数据列表
@@ -303,7 +324,7 @@ const generateMockData = (): CustomerInfo[] => {
     }
   ]
   
-  // 厦门大学系列（包含下级）- 拥有部分业务
+  // 停机数据 - 第6条（厦门大学改为停机）
   data.push({
     id: '3',
     name: '厦门大学',
@@ -315,23 +336,30 @@ const generateMockData = (): CustomerInfo[] => {
     district: '思明区',
     region: '福建省厦门市',
     industry: '教育',
-    remark: '985工程重点大学',
+    remark: '985工程重点大学（已停机）',
     relatedWords: '厦大 厦门大学 思明南路',
     isConfidential: false,
-    isOutOfService: false,
+    isOutOfService: true,
     level: 1,
     children: xiamenUniversityChildren,
-    services: ['dial', 'elegant', 'sms']
+    services: ['elegant', 'brand', 'realName']
   })
   
-  // 添加厦门大学下级到数据列表
-  xiamenUniversityChildren.forEach(child => data.push(child))
+  // 添加厦门大学下级到数据列表（第7-8条改为停机，只添加前2个）
+  xiamenUniversityChildren.slice(0, 2).forEach((child) => {
+    data.push({
+      ...child,
+      isOutOfService: true,
+      services: ['elegant', 'brand', 'realName'],
+      remark: `${child.remark}（已停机）`
+    })
+  })
   
-  // 停机号码 - 停机不展示拍号
+  // 保密数据 - 第9条
   data.push({
     id: '5',
     name: '福建农林大学',
-    phoneNumber: '0591-83789101',
+    phoneNumber: '0591-8378****',
     nameCode: 'fjnlfnldxfj',
     address: '福建省福州市仓山区上下店路15号',
     addressCode: 'fzsxmsjxd',
@@ -339,12 +367,32 @@ const generateMockData = (): CustomerInfo[] => {
     district: '仓山区',
     region: '福建省福州市',
     industry: '教育',
-    remark: '省重点大学',
+    remark: '保密单位',
     relatedWords: '农大 农林大学 上下店路',
-    isConfidential: false,
-    isOutOfService: true,
+    isConfidential: true,
+    isOutOfService: false,
     level: 1,
-    services: ['elegant', 'brand', 'realName']
+    services: []
+  })
+  
+  // 保密数据 - 第10条
+  data.push({
+    id: '6',
+    name: '福建省保密局',
+    phoneNumber: '0591-8788****',
+    nameCode: 'fjsbmjfjsb',
+    address: '福建省福州市鼓楼区华林路80号',
+    addressCode: 'fzsglqhll',
+    city: '福州市',
+    district: '鼓楼区',
+    region: '福建省福州市',
+    industry: '其他',
+    remark: '保密单位',
+    relatedWords: '保密局 福建省保密局',
+    isConfidential: true,
+    isOutOfService: false,
+    level: 1,
+    services: []
   })
   
   // 生成更多数据
@@ -374,7 +422,7 @@ const generateMockData = (): CustomerInfo[] => {
     let services: string[] = []
     if (!isConfidential && !isOutOfService) {
       // 正常数据随机拥有部分业务
-      const allServices = ['dial', 'elegant', 'brand', 'realName', 'transfer', 'sms']
+      const allServices = ['dial', 'elegant', 'brand', 'realName', 'transfer', 'sms', 'card']
       const serviceCount = Math.floor(Math.random() * 4) + 2 // 2-5个业务
       for (let j = 0; j < serviceCount; j++) {
         const svc = allServices[Math.floor(Math.random() * allServices.length)]
@@ -392,6 +440,37 @@ const generateMockData = (): CustomerInfo[] => {
     }
     // 保密数据不展示任何业务
     
+    // 根据业务类型生成对应的业务信息
+    const elegantBusiness = services.includes('elegant') ? {
+      salesArea: `${city.name} 全市`,
+      keywords: ['空调清洗', '空调清洁', '家电维修', '家政服务', '装修设计'][Math.floor(Math.random() * 5)],
+      keywordCode: ['ktqx', 'ktqj', 'jdwx', 'jzfw', 'zxds'][Math.floor(Math.random() * 5)]
+    } : undefined
+    
+    const realNameBusiness = services.includes('realName') ? {
+      companyName: `${namePrefix}${nameSuffix}`,
+      realNameCode: `RM${Date.now().toString().slice(-8)}${Math.floor(Math.random() * 100)}`
+    } : undefined
+    
+    const transferBusiness = services.includes('transfer') ? {
+      transferNumbers: [
+        `059${Math.floor(Math.random() * 9) + 1}-${Math.floor(Math.random() * 899999 + 100000)}`,
+        Math.random() > 0.5 ? `059${Math.floor(Math.random() * 9) + 1}-${Math.floor(Math.random() * 899999 + 100000)}` : undefined
+      ].filter(Boolean) as string[],
+      transferTimeStart: ['08:00', '09:00', '07:30'][Math.floor(Math.random() * 3)],
+      transferTimeEnd: ['18:00', '19:00', '20:00', '22:00'][Math.floor(Math.random() * 4)]
+    } : undefined
+    
+    const brandBusiness = services.includes('brand') ? {
+      adText: `您好，欢迎致电${namePrefix}${nameSuffix}`
+    } : undefined
+    
+    // 生成简称和别名
+    const shortName = `${namePrefix}${nameSuffix}`.substring(0, 6)
+    const shortNameCode = `${namePrefix.substring(0, 1)}${nameSuffix.substring(0, 1)}${Math.random().toString(36).substring(2, 5)}`
+    const alias = `${namePrefix}${nameSuffix}`.substring(0, 4)
+    const aliasCode = `${namePrefix.substring(0, 1)}${nameSuffix.substring(0, 1)}${Math.floor(Math.random() * 1000)}`
+    
     data.push({
       id: i.toString(),
       name: `${namePrefix}${nameSuffix}`,
@@ -402,15 +481,95 @@ const generateMockData = (): CustomerInfo[] => {
       city: city.name,
       district: district.name,
       region: `福建省${city.name}`,
+      shortName,
+      shortNameCode,
+      alias,
+      aliasCode,
       industry: industries[Math.floor(Math.random() * industries.length)],
       remark: Math.random() > 0.8 ? '重要客户' : '',
       relatedWords: `${namePrefix} ${nameSuffix} ${street}`,
       isConfidential,
       isOutOfService,
       level: Math.floor(Math.random() * 3) + 1,
-      services
+      services,
+      elegantBusiness,
+      realNameBusiness,
+      transferBusiness,
+      brandBusiness
     })
   }
+  
+  // 添加固定的停机数据：漳州营业部
+  data.push({
+    id: 'special-1',
+    name: '漳州营业部',
+    phoneNumber: '0596-87889999',
+    nameCode: 'zzbybzzby',
+    address: '福建省漳州市芗城区胜利路123号',
+    addressCode: 'zzsxlyl',
+    city: '漳州市',
+    district: '芗城区',
+    region: '福建省漳州市',
+    shortName: '漳州部',
+    shortNameCode: 'zzb001',
+    alias: '漳州',
+    aliasCode: 'zz01',
+    industry: '金融',
+    remark: '已停机',
+    relatedWords: '漳州 营业部',
+    isConfidential: false,
+    isOutOfService: true,
+    level: 1,
+    services: ['elegant', 'brand', 'realName'],
+    elegantBusiness: {
+      salesArea: '漳州 全市',
+      keywords: '金融服务',
+      keywordCode: 'jrfw'
+    },
+    realNameBusiness: {
+      companyName: '漳州营业部',
+      realNameCode: 'RM20240002'
+    },
+    brandBusiness: {
+      adText: '您好，欢迎致电漳州营业部'
+    }
+  })
+  
+  // 添加固定的停机数据：厦门诊所
+  data.push({
+    id: 'special-2',
+    name: '厦门诊所',
+    phoneNumber: '0592-66887777',
+    nameCode: 'xmzsxmzs',
+    address: '福建省厦门市思明区湖滨北路456号',
+    addressCode: 'xmsbhbl',
+    city: '厦门市',
+    district: '思明区',
+    region: '福建省厦门市',
+    shortName: '厦诊',
+    shortNameCode: 'xz001',
+    alias: '厦门',
+    aliasCode: 'xm01',
+    industry: '医疗',
+    remark: '已停机',
+    relatedWords: '厦门 诊所',
+    isConfidential: false,
+    isOutOfService: true,
+    level: 1,
+    services: ['elegant', 'brand', 'realName'],
+    elegantBusiness: {
+      salesArea: '厦门 全市',
+      keywords: '医疗服务',
+      keywordCode: 'ylfw'
+    },
+    realNameBusiness: {
+      companyName: '厦门诊所',
+      realNameCode: 'RM20240003'
+    },
+    brandBusiness: {
+      adText: '您好，欢迎致电厦门诊所'
+    }
+  })
   
   return data
 }
@@ -516,8 +675,13 @@ export const searchCustomers = async (params: SearchParams): Promise<ApiResponse
     return countA - countB
   })
   
-  // 合并结果：优推在前，普通在后
-  result = [...elegantItems, ...normalItems]
+  // 将漳州营业部和厦门诊所固定在优推商户之后，确保出现在第一页
+  const specialItems = result.filter(item => item.name === '漳州营业部' || item.name === '厦门诊所')
+  const otherElegantItems = elegantItems.filter(item => item.name !== '漳州营业部' && item.name !== '厦门诊所')
+  const otherNormalItems = normalItems.filter(item => item.name !== '漳州营业部' && item.name !== '厦门诊所')
+  
+  // 合并结果：优推在前，特殊停机数据紧随其后，普通数据在最后
+  result = [...otherElegantItems, ...specialItems, ...otherNormalItems]
   
   // 标记优先播报（前3个优推商户标记为优先）
   result = result.map((item, index) => ({
