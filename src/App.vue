@@ -1101,11 +1101,11 @@ $sidebar-active: #00a8ff;
   min-height: 100vh;
 }
 
-// 左侧导航栏 - 上移到顶部，与话务条并排
+// 左侧导航栏 - 从话务条下方开始
 .left-sidebar {
   position: fixed;
   left: 0;
-  top: 0; // 上移到顶部
+  top: 48px; // 从话务条下方开始
   bottom: 0;
   width: 220px;
   background: $sidebar-bg;
