@@ -79,6 +79,9 @@
               <div class="sub-menu-item" :class="{ active: currentModule === 'customerAudit' }" @click="handleCustomerManageItem('customerAudit')">
                 <span>客户业务审核</span>
               </div>
+              <div class="sub-menu-item" :class="{ active: currentModule === 'customerMigration' }" @click="handleCustomerManageItem('customerMigration')">
+                <span>客户业务迁移</span>
+              </div>
             </div>
             <!-- 销售品管理（二级菜单） -->
             <div class="sub-menu-item" :class="{ active: showProductManageMenu }" @click.stop="toggleProductManageMenu">
@@ -396,6 +399,9 @@
           @switch-to-edit="handleSwitchToCustomerEdit"
           @save-success="handleCustomerSaveSuccess"
         />
+
+        <!-- 客户业务迁移模块 -->
+        <CustomerMigration v-else-if="currentModule === 'customerMigration'" />
       </main>
 
     </div>
@@ -634,6 +640,9 @@ import AiDiversionManage from './components/Settings/AiDiversion/AiDiversionMana
 // 客户基本信息组件
 import { CustomerInfoList, CustomerInfoDetail } from './components/CRM/CustomerInfo'
 
+// 客户业务迁移组件
+import { CustomerMigration } from './components/Modules/CustomerMigration'
+
 // 底部用户信息组件
 import BottomUserInfo from './components/BottomUserInfo/BottomUserInfo.vue'
 
@@ -787,6 +796,9 @@ const handleCustomerManageItem = (item: string) => {
     // 保持客户管理菜单展开
   } else if (item === 'customerAudit') {
     currentModule.value = 'customerAudit'
+    // 保持客户管理菜单展开
+  } else if (item === 'customerMigration') {
+    currentModule.value = 'customerMigration'
     // 保持客户管理菜单展开
   }
 }
