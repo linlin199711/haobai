@@ -556,7 +556,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, defineAsyncComponent } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
   Phone, CircleCheck, VideoPlay, Document, User, Setting,
@@ -575,79 +575,80 @@ import { useNotificationStore } from './stores/notificationStore'
 // 使用通知Store
 const notificationStore = useNotificationStore()
 
-// 功能模块组件
-import NumberSearch from './components/NumberSearch/NumberSearch.vue'
-import NonNumberQueryModule from './components/Modules/NonNumberQueryModule.vue'
-import CarMoveModule from './components/Modules/CarMoveModule.vue'
-import Pbx30Module from './components/Modules/Pbx30Module.vue'
+// 功能模块组件 - 动态导入
+const NumberSearch = defineAsyncComponent(() => import('./components/NumberSearch/NumberSearch.vue'))
+const NonNumberQueryModule = defineAsyncComponent(() => import('./components/Modules/NonNumberQueryModule.vue'))
+const CarMoveModule = defineAsyncComponent(() => import('./components/Modules/CarMoveModule.vue'))
+const Pbx30Module = defineAsyncComponent(() => import('./components/Modules/Pbx30Module.vue'))
 
 // CRM关键词选择组件
-import { KeywordSelectModal } from './components/CRM/KeywordSelect'
+const KeywordSelectModal = defineAsyncComponent(() => import('./components/CRM/KeywordSelect').then(m => ({ default: m.KeywordSelectModal })))
 
 // 销售品关键字管理组件
-import { KeywordManage } from './components/CRM/KeywordManage'
+const KeywordManage = defineAsyncComponent(() => import('./components/CRM/KeywordManage').then(m => ({ default: m.KeywordManage })))
 
 // 同义关键字管理组件
-import { SynonymKeywordManager } from './components/Settings/SynonymKeyword'
+const SynonymKeywordManager = defineAsyncComponent(() => import('./components/Settings/SynonymKeyword').then(m => ({ default: m.SynonymKeywordManager })))
 
 // 销售单元信息管理组件
-import SalesUnitManage from './components/CRM/SalesUnitManage/SalesUnitManage.vue'
+const SalesUnitManage = defineAsyncComponent(() => import('./components/CRM/SalesUnitManage/SalesUnitManage.vue'))
 
 // 审核组件
-import KeywordAudit from './components/CRM/KeywordManage/KeywordAudit.vue'
-import SalesUnitAudit from './components/CRM/SalesUnitManage/SalesUnitAudit.vue'
+const KeywordAudit = defineAsyncComponent(() => import('./components/CRM/KeywordManage/KeywordAudit.vue'))
+const SalesUnitAudit = defineAsyncComponent(() => import('./components/CRM/SalesUnitManage/SalesUnitAudit.vue'))
 
 // 客户业务审核组件
-import CustomerAudit from './components/CRM/CustomerAudit/CustomerAudit.vue'
+const CustomerAudit = defineAsyncComponent(() => import('./components/CRM/CustomerAudit/CustomerAudit.vue'))
 
 // 非号码信息管理组件
-import NonNumberInfoManage from './components/Settings/NonNumberInfo/NonNumberInfoManage.vue'
+const NonNumberInfoManage = defineAsyncComponent(() => import('./components/Settings/NonNumberInfo/NonNumberInfoManage.vue'))
 
 // 更新说明组件
-import UpdateNotes from './components/Settings/UpdateNotes/UpdateNotes.vue'
+const UpdateNotes = defineAsyncComponent(() => import('./components/Settings/UpdateNotes/UpdateNotes.vue'))
 
 // 人工话务员接续报表组件
-import OperatorReport from './components/Reports/OperatorReport/OperatorReport.vue'
+const OperatorReport = defineAsyncComponent(() => import('./components/Reports/OperatorReport/OperatorReport.vue'))
 
 // 优推商家查询量报表组件
-import MerchantQueryReport from './components/Reports/MerchantQueryReport/MerchantQueryReport.vue'
+const MerchantQueryReport = defineAsyncComponent(() => import('./components/Reports/MerchantQueryReport/MerchantQueryReport.vue'))
 
 // 关键词查询量及资源统计报表组件
-import KeywordQueryReport from './components/Reports/KeywordQueryReport/KeywordQueryReport.vue'
+const KeywordQueryReport = defineAsyncComponent(() => import('./components/Reports/KeywordQueryReport/KeywordQueryReport.vue'))
 
 // 话务员输入关键词搜索量统计表组件
-import KeywordSearchReport from './components/Reports/KeywordSearchReport/KeywordSearchReport.vue'
+const KeywordSearchReport = defineAsyncComponent(() => import('./components/Reports/KeywordSearchReport/KeywordSearchReport.vue'))
 
 // 114推广/百事通加盟商家数据报表组件
-import MerchantDataReport from './components/Reports/MerchantDataReport/MerchantDataReport.vue'
+const MerchantDataReport = defineAsyncComponent(() => import('./components/Reports/MerchantDataReport/MerchantDataReport.vue'))
 
 // 商家报号明细数据报表组件
-import MerchantCallReport from './components/Reports/MerchantCallReport/MerchantCallReport.vue'
-import ProvinceCallReport from './components/Reports/ProvinceCallReport/ProvinceCallReport.vue'
-import NumberTransferReport from './components/Reports/NumberTransferReport/NumberTransferReport.vue'
-import OperatorWorkReport from './components/Reports/OperatorWorkReport/OperatorWorkReport.vue'
-import OperatorAttendanceReport from './components/Reports/OperatorAttendanceReport/OperatorAttendanceReport.vue'
-import OperatorBusyDetailReport from './components/Reports/OperatorBusyDetailReport/OperatorBusyDetailReport.vue'
-import NumberQueryDetailReport from './components/Reports/NumberQueryDetailReport/NumberQueryDetailReport.vue'
-import UserSatisfactionReport from './components/Reports/UserSatisfactionReport/UserSatisfactionReport.vue'
+const MerchantCallReport = defineAsyncComponent(() => import('./components/Reports/MerchantCallReport/MerchantCallReport.vue'))
+const ProvinceCallReport = defineAsyncComponent(() => import('./components/Reports/ProvinceCallReport/ProvinceCallReport.vue'))
+const NumberTransferReport = defineAsyncComponent(() => import('./components/Reports/NumberTransferReport/NumberTransferReport.vue'))
+const OperatorWorkReport = defineAsyncComponent(() => import('./components/Reports/OperatorWorkReport/OperatorWorkReport.vue'))
+const OperatorAttendanceReport = defineAsyncComponent(() => import('./components/Reports/OperatorAttendanceReport/OperatorAttendanceReport.vue'))
+const OperatorBusyDetailReport = defineAsyncComponent(() => import('./components/Reports/OperatorBusyDetailReport/OperatorBusyDetailReport.vue'))
+const NumberQueryDetailReport = defineAsyncComponent(() => import('./components/Reports/NumberQueryDetailReport/NumberQueryDetailReport.vue'))
+const UserSatisfactionReport = defineAsyncComponent(() => import('./components/Reports/UserSatisfactionReport/UserSatisfactionReport.vue'))
 
 // 组织架构管理组件
-import OrganizationManage from './components/Settings/Organization/OrganizationManage.vue'
+const OrganizationManage = defineAsyncComponent(() => import('./components/Settings/Organization/OrganizationManage.vue'))
 
 // AI 接话分流管理组件
-import AiDiversionManage from './components/Settings/AiDiversion/AiDiversionManage.vue'
+const AiDiversionManage = defineAsyncComponent(() => import('./components/Settings/AiDiversion/AiDiversionManage.vue'))
 
 // 客户基本信息组件
-import { CustomerInfoList, CustomerInfoDetail } from './components/CRM/CustomerInfo'
+const CustomerInfoList = defineAsyncComponent(() => import('./components/CRM/CustomerInfo').then(m => ({ default: m.CustomerInfoList })))
+const CustomerInfoDetail = defineAsyncComponent(() => import('./components/CRM/CustomerInfo').then(m => ({ default: m.CustomerInfoDetail })))
 
 // 客户业务迁移组件
-import { CustomerMigration } from './components/Modules/CustomerMigration'
+const CustomerMigration = defineAsyncComponent(() => import('./components/Modules/CustomerMigration').then(m => ({ default: m.CustomerMigration })))
 
 // 底部用户信息组件
-import BottomUserInfo from './components/BottomUserInfo/BottomUserInfo.vue'
+const BottomUserInfo = defineAsyncComponent(() => import('./components/BottomUserInfo/BottomUserInfo.vue'))
 
 // 页面说明组件 - 完全独立，与业务系统无任何关联
-import { PageInstructionDrawer } from './components/PageInstruction'
+const PageInstructionDrawer = defineAsyncComponent(() => import('./components/PageInstruction').then(m => ({ default: m.PageInstructionDrawer })))
 
 // 当前显示的模块（默认更新说明页面）
 const currentModule = ref('updateNotes')

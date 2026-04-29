@@ -1,10 +1,21 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
   base: './',
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    })
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
@@ -31,10 +42,22 @@ export default defineConfig({
           }
           return 'assets/[name]-[hash][extname]'
         },
-        manualChunks: {
-          'element-plus': ['element-plus'],
-          'wangeditor': ['@wangeditor/editor', '@wangeditor/editor-for-vue'],
-          'xlsx': ['xlsx']
+        manualChunks(id) {
+          if (id.includes('element-plus')) {
+            return 'element-plus'
+          }
+          if (id.includes('wangeditor')) {
+            return 'wangeditor'
+          }
+          if (id.includes('xlsx')) {
+            return 'xlsx'
+          }
+          if (id.includes('@vueuse')) {
+            return 'vueuse'
+          }
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
         }
       }
     },
